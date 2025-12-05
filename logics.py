@@ -12,7 +12,7 @@ conn = sqlite3.connect("vault.db")
 cursor = conn.cursor()
 path_to_salt = Path("salt.key")
 master_password = None
-
+#fernet = None
 def start(enter_password):
     global master_password
     master_password = enter_password
@@ -29,6 +29,8 @@ def start(enter_password):
             print("minimal length of password - 10 chapters")
             sys.exit()
         create_salt()
+        #global fernet
+        #fernet = Fernet(master_key())
         create_element("test", "test","test")
     try:
         show_elements()
@@ -45,7 +47,7 @@ def create_salt():
             file.write(salt)
             print("crated ",salt)
 
-def master_key(): # надо убрать pas
+def master_key():
     salt = open("salt.key", 'rb').read()
     kdf = PBKDF2HMAC (
         salt=salt,
@@ -96,7 +98,6 @@ def delete_element(index):
     print("done")
 
 def update_element(index, new_link, new_login, new_password):
-    # баг, записывается не в зашифрованном виде
     fernet = Fernet(master_key())
     cursor.execute("UPDATE vault set "
                    "link = ?, login = ?, password = ? "
