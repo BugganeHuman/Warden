@@ -1,7 +1,6 @@
 import logics
 import customtkinter
-import sys
-from pathlib import Path
+
 def main():
     master_key_input = input("write master key: ")
     logics.start(master_key_input)
@@ -15,3 +14,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
