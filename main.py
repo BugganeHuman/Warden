@@ -1,8 +1,14 @@
 import logics
 import customtkinter
+from pathlib import Path
 
 def main():
-    master_key_input = input("write master key: ")
+    master_key_input = None
+    if not Path("salt.key").exists():
+        master_key_input = input("Write password for create your master key, "
+                            "minimum 10 chapters\n: ")
+    else:
+       master_key_input = input("write master key: ")
     logics.start(master_key_input)
     index = 0
     for element in logics.show_elements():
