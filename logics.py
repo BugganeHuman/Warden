@@ -33,7 +33,7 @@ def start(enter_password):
         create_element("test", "test","test")
     try:
         show_elements()
-        print("good")
+        print("Enter")
     except Exception as e:
         print("incorrect password")
         return sys.exit()# здесь мб надо сделать что бы спрашивался, 3 раза
@@ -74,17 +74,20 @@ def show_elements ():
     elements = cursor.execute("SELECT * FROM vault").fetchall()
     fernet = Fernet(master_key(master_password))
     elements_decrypt = []
-    counter = 0
+    index = 0
     for record in elements:
         elements_decrypt.append([])
         for element in record:
-            elements_decrypt[counter].append(fernet.decrypt(element))
-        counter += 1
+            elements_decrypt[index].append(fernet.decrypt(element))
+        index += 1
     return elements_decrypt
+
+def show_element_secret_data(index):
+    return show_elements()[index]
 
 #start("password123")
 #create_salt()
-#create_element("https://docs.python.org/3/library/sqlite3.html", "user", "qwe098")
+#create_element("Microsoft", "Bill Gates", "poop444")
 #show_elements("password")
 #conn.close()
 # мб надо придумать как хронить salt в бд вместе с данными
