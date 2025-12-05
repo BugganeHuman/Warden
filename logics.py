@@ -84,6 +84,9 @@ def show_elements ():
 
 def show_element_secret_data(index):
     return show_elements()[index]
+    
+def delete_element(index):
+    pass # удаляет строку из бд
 
 #start("password123")
 #create_salt()
@@ -91,3 +94,4 @@ def show_element_secret_data(index):
 #show_elements("password")
 #conn.close()
 # мб надо придумать как хронить salt в бд вместе с данными
+
