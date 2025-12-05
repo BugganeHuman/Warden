@@ -1,7 +1,6 @@
 import base64
 import os
 import sys
-
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -46,7 +45,7 @@ def create_salt():
             file.write(salt)
             print("crated ",salt)
 
-def master_key(pas):
+def master_key(): # надо убрать pas
     salt = open("salt.key", 'rb').read()
     kdf = PBKDF2HMAC (
         salt=salt,
@@ -58,40 +57,49 @@ def master_key(pas):
     return key
 
 def create_element(link, login, password):
-    print(master_password)
-    key = master_key(master_password)
+    key = master_key()
     fernet = Fernet(key)
     link_binary = fernet.encrypt(link.encode())
     login_binary = fernet.encrypt(login.encode())
     password_binary = fernet.encrypt(password.encode())
+    #надо сделать что бы не добавлялись дубликаты
     cursor.execute("INSERT INTO vault (link, login, password) VALUES (?,?,?)",
                    (sqlite3.Binary(link_binary),
                               sqlite3.Binary(login_binary),
                               sqlite3.Binary(password_binary)))
     conn.commit()
 
-def show_elements ():
+def show_elements (decrypt = True):
     elements = cursor.execute("SELECT * FROM vault").fetchall()
-    fernet = Fernet(master_key(master_password))
+    fernet = Fernet(master_key())
     elements_decrypt = []
     index = 0
     for record in elements:
         elements_decrypt.append([])
         for element in record:
-            elements_decrypt[index].append(fernet.decrypt(element))
+            if decrypt:
+                elements_decrypt[index].append(fernet.decrypt(element))
+            if not decrypt:
+                elements_decrypt[index].append(element)
         index += 1
     return elements_decrypt
 
-def show_element_secret_data(index):
-    return show_elements()[index]
-    
+def show_element_secret_data(index, decrypt = True):
+    return show_elements(decrypt)[index]
+
 def delete_element(index):
-    pass # удаляет строку из бд
+    cursor.execute("DELETE FROM vault WHERE link = ? AND login = ? AND password = ?"
+                   , (show_element_secret_data(index, False)[0],
+                   show_element_secret_data(index, False)[1],
+                      show_element_secret_data(index, False)[2]))
+    conn.commit()
+    print("done")
+
 
 #start("password123")
+#delete_element(1)
 #create_salt()
 #create_element("Microsoft", "Bill Gates", "poop444")
-#show_elements("password")
+#print(show_elements())
 #conn.close()
 # мб надо придумать как хронить salt в бд вместе с данными
-
