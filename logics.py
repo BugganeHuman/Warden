@@ -13,6 +13,7 @@ conn = sqlite3.connect("vault.db")
 cursor = conn.cursor()
 path_to_salt = Path("salt.key")
 master_password = None
+
 def start(enter_password):
     global master_password
     master_password = enter_password
@@ -25,10 +26,13 @@ def start(enter_password):
         """)
     conn.commit()
     if not path_to_salt.exists():
+        if len(master_password) < 11:
+            print("minimal length of password - 10 chapters")
+            sys.exit()
         create_salt()
         create_element("test", "test","test")
     try:
-        print(show_elements())
+        show_elements()
         print("good")
     except Exception as e:
         print("incorrect password")
@@ -78,6 +82,7 @@ def show_elements ():
         counter += 1
     return elements_decrypt
 
+#start("password123")
 #create_salt()
 #create_element("https://docs.python.org/3/library/sqlite3.html", "user", "qwe098")
 #show_elements("password")
