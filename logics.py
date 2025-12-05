@@ -95,11 +95,31 @@ def delete_element(index):
     conn.commit()
     print("done")
 
+def update_element(index, new_link, new_login, new_password):
+    # баг, записывается не в зашифрованном виде
+    fernet = Fernet(master_key())
+    cursor.execute("UPDATE vault set "
+                   "link = ?, login = ?, password = ? "
+                   "WHERE link = ? AND login = ? AND password = ?", (
+                    fernet.encrypt(new_link.encode()),
+                    fernet.encrypt(new_login.encode()),
+                    fernet.encrypt(new_password.encode()),
+                    show_element_secret_data(index, False)[0],
+                    show_element_secret_data(index, False)[1],
+                    show_element_secret_data(index, False)[2]
+    ))
+    conn.commit()
+    print("done")
+
+def db_close():
+    conn.close()
+
 
 #start("password123")
+#update_element(1, "Apple", "Tim Cock", "orange135")
 #delete_element(1)
 #create_salt()
-#create_element("Microsoft", "Bill Gates", "poop444")
+#create_element("NVIDEA", "chinese dude", "pi333")
 #print(show_elements())
 #conn.close()
 # мб надо придумать как хронить salt в бд вместе с данными
