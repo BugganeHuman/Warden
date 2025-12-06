@@ -89,9 +89,8 @@ def show_elements (decrypt = True):
         index += 1
     return elements_decrypt
 
-def show_element_secret_data(index, decrypt = True):
+def show_element_secret_data(index, decrypt = True, show_index = False):
     return show_elements(decrypt)[index]
-
 def delete_element(index):
     cursor.execute("DELETE FROM vault WHERE link = ? AND login = ? AND password = ?"
                    , (show_element_secret_data(index, False)[0],
@@ -119,6 +118,7 @@ def db_close():
 
 def find_element (link):
     index = 0
+    index_of_list_found = 0
     list_found = []
     for element in show_elements():
         if index == 0:
@@ -129,12 +129,16 @@ def find_element (link):
                   if str(link).lower() in str(finding_link).lower()]
         if result:
             list_found.append(show_element_secret_data(index))
+            list_found[index_of_list_found].append(index)
+            index_of_list_found += 1
         index += 1
-    return list_found # мб надо добавить что бы возвращались только линки
-    # а все остальное через *** и открывалось по запросу
+    return list_found
+
+def generate_password (amount, lower_case, apper_case, numbers, chapters):
+    pass
 
 start("password123")
-print(find_element("aM"))
+print(find_element("a"))
 #update_element(1, "Apple", "Tim Cock", "orange135")
 #delete_element(4)
 #create_salt()
