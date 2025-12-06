@@ -117,8 +117,24 @@ def update_element(index, new_link, new_login, new_password):
 def db_close():
     conn.close()
 
+def find_element (link):
+    index = 0
+    list_found = []
+    for element in show_elements():
+        if index == 0:
+            index += 1
+            continue
+        finding_link = element[0]
+        result = [chapter for chapter in str(finding_link).lower()
+                  if str(link).lower() in str(finding_link).lower()]
+        if result:
+            list_found.append(show_element_secret_data(index))
+        index += 1
+    return list_found # мб надо добавить что бы возвращались только линки
+    # а все остальное через *** и открывалось по запросу
 
-#start("password123")
+start("password123")
+print(find_element("aM"))
 #update_element(1, "Apple", "Tim Cock", "orange135")
 #delete_element(4)
 #create_salt()
