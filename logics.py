@@ -64,11 +64,14 @@ def create_element(link, login, password):
     link_binary = fernet.encrypt(link.encode())
     login_binary = fernet.encrypt(login.encode())
     password_binary = fernet.encrypt(password.encode())
-    #надо сделать что бы не добавлялись дубликаты
+    for element in show_elements():
+        if link and login and password in element:
+            print("This element already added")
+            return
     cursor.execute("INSERT INTO vault (link, login, password) VALUES (?,?,?)",
-                   (sqlite3.Binary(link_binary),
-                              sqlite3.Binary(login_binary),
-                              sqlite3.Binary(password_binary)))
+                (sqlite3.Binary(link_binary),
+                            sqlite3.Binary(login_binary),
+                            sqlite3.Binary(password_binary)))
     conn.commit()
 
 def show_elements (decrypt = True):
@@ -80,7 +83,7 @@ def show_elements (decrypt = True):
         elements_decrypt.append([])
         for element in record:
             if decrypt:
-                elements_decrypt[index].append(fernet.decrypt(element))
+                elements_decrypt[index].append(fernet.decrypt(element).decode())
             if not decrypt:
                 elements_decrypt[index].append(element)
         index += 1
@@ -118,8 +121,10 @@ def db_close():
 
 #start("password123")
 #update_element(1, "Apple", "Tim Cock", "orange135")
-#delete_element(1)
+#delete_element(4)
 #create_salt()
+#print(show_elements())
+#print("NVIDEA" in show_element_secret_data(4))
 #create_element("NVIDEA", "chinese dude", "pi333")
 #print(show_elements())
 #conn.close()
