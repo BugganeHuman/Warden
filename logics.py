@@ -6,6 +6,8 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import sqlite3
 from pathlib import Path
+import string
+import secrets
 
 
 # мб эти все переменный надо перевести в хай регистр ибо это константы
@@ -29,7 +31,7 @@ def start(enter_password):
     if not path_to_salt.exists():
         if len(master_password) < 10:
             print("minimal length of password - 10 chapters")
-            sys.exit()
+            return
         create_salt()
         fernet = Fernet(master_key())
         create_element("test", "test","test")
@@ -40,7 +42,7 @@ def start(enter_password):
     except Exception as e:
         print("incorrect password")
         #print(e)
-        return sys.exit()# здесь мб надо сделать что бы спрашивался, 3 раза
+        return #sys.exit()# здесь мб надо сделать что бы спрашивался, 3 раза
                 # и только потом закрывался
 
 def create_salt():
@@ -134,11 +136,37 @@ def find_element (link):
         index += 1
     return list_found
 
-def generate_password (amount, lower_case, apper_case, numbers, chapters):
-    pass
+def generate_password (amount, lower_case = False,
+                       upper_case = False, numbers = False,
+                       special_symbols = False):
+    lower_case_all = string.ascii_lowercase
+    upper_case_all = string.ascii_uppercase
+    numbers_all = string.digits
+    special_symbols_all = string.punctuation
+    result_list_chapters = []
+    if lower_case:
+        result_list_chapters.append(lower_case_all)
+    if upper_case:
+        result_list_chapters.append(upper_case_all)
+    if numbers:
+        result_list_chapters.append(numbers_all)
+    if special_symbols:
+        result_list_chapters.append(special_symbols_all)
+    result_string_chapters = "".join(result_list_chapters)
+    result = ""
+    result_list = []
+    for password in range(5):
+        result = ""
+        for i in range(amount):
+            result += secrets.choice(result_string_chapters)
+        result_list.append(result)
+    print(result_list)
+    return result_list
 
-start("password123")
-print(find_element("a"))
+
+#start("password123")
+generate_password(10, True, False, True, )
+#print(find_element("a"))
 #update_element(1, "Apple", "Tim Cock", "orange135")
 #delete_element(4)
 #create_salt()
