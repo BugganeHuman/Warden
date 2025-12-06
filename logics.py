@@ -8,13 +8,15 @@ import sqlite3
 from pathlib import Path
 
 
+# мб эти все переменный надо перевести в хай регистр ибо это константы
 conn = sqlite3.connect("vault.db")
 cursor = conn.cursor()
 path_to_salt = Path("salt.key")
 master_password = None
-#fernet = None
+fernet = None
 def start(enter_password):
     global master_password
+    global fernet
     master_password = enter_password
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS vault (
@@ -25,18 +27,19 @@ def start(enter_password):
         """)
     conn.commit()
     if not path_to_salt.exists():
-        if len(master_password) < 11:
+        if len(master_password) < 10:
             print("minimal length of password - 10 chapters")
             sys.exit()
         create_salt()
-        #global fernet
-        #fernet = Fernet(master_key())
+        fernet = Fernet(master_key())
         create_element("test", "test","test")
+    fernet = Fernet(master_key())
     try:
         show_elements()
         print("Enter")
     except Exception as e:
         print("incorrect password")
+        #print(e)
         return sys.exit()# здесь мб надо сделать что бы спрашивался, 3 раза
                 # и только потом закрывался
 
@@ -59,8 +62,6 @@ def master_key():
     return key
 
 def create_element(link, login, password):
-    key = master_key()
-    fernet = Fernet(key)
     link_binary = fernet.encrypt(link.encode())
     login_binary = fernet.encrypt(login.encode())
     password_binary = fernet.encrypt(password.encode())
@@ -76,7 +77,6 @@ def create_element(link, login, password):
 
 def show_elements (decrypt = True):
     elements = cursor.execute("SELECT * FROM vault").fetchall()
-    fernet = Fernet(master_key())
     elements_decrypt = []
     index = 0
     for record in elements:
@@ -101,7 +101,6 @@ def delete_element(index):
     print("done")
 
 def update_element(index, new_link, new_login, new_password):
-    fernet = Fernet(master_key())
     cursor.execute("UPDATE vault set "
                    "link = ?, login = ?, password = ? "
                    "WHERE link = ? AND login = ? AND password = ?", (
