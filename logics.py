@@ -38,7 +38,7 @@ def start(enter_password):
         create_element("test", "test","test")
     FERNET = Fernet(master_key())
     try:
-        show_elements()
+        show_elements() # можно переделать что бы тестовая запись хранилась в meta
         print("Enter")
         return True # это надо что бы удобно обрабатывать в интерфейсе
                     # типо если вход успешный возвращает True
