@@ -32,7 +32,7 @@ def start(enter_password):
     if not PATH_TO_SALT.exists():
         if len(MASTER_PASSWORD) < 10:
             print("minimal length of password - 10 chapters")
-            return
+            return 0
         create_salt()
         FERNET = Fernet(master_key())
         create_element("test", "test","test")
@@ -43,7 +43,7 @@ def start(enter_password):
     except Exception as e:
         print("incorrect password")
         #print(e)
-        return #sys.exit()# здесь мб надо сделать что бы спрашивался, 3 раза
+        return 0#sys.exit()# здесь мб надо сделать что бы спрашивался, 3 раза
                 # и только потом закрывался
 
 def create_salt():
