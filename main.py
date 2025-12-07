@@ -1,12 +1,11 @@
 import logics
 import customtkinter
-from pathlib import Path
 
 
 def main():
     while True:
         master_key_input = None
-        if not Path("salt.key").exists():
+        if not logics.SALT_EXISTS:
             master_key_input = input("Write password for create your master key, "
                             "minimum 10 chapters\n: ")
         else:
