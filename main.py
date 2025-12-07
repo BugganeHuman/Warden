@@ -5,7 +5,7 @@ import customtkinter
 def main():
     while True:
         master_key_input = None
-        if not logics.SALT_EXISTS:
+        if not logics.salt_exists():
             master_key_input = input("Write password for create your master key, "
                             "minimum 10 chapters\n: ")
         else:
@@ -14,9 +14,6 @@ def main():
             break
     index = 0
     for element in logics.show_elements():
-        if index == 0:
-            index += 1
-            continue
         print(f"{index} link = {element[0]} | login = {"*" * len(element[1])}"
               f" | password =  {"*" * len(element[2])}")
         index += 1
