@@ -8,6 +8,7 @@ import sqlite3
 from pathlib import Path
 import string
 import secrets
+import pyperclip
 
 
 # мб эти все переменный надо перевести в хай регистр ибо это константы
@@ -16,6 +17,7 @@ CURSOR = CONN.cursor()
 PATH_TO_SALT = Path("salt.key")
 MASTER_PASSWORD = None
 FERNET = None
+counter_of_enter_password = 0
 
 def start(enter_password):
     global MASTER_PASSWORD
@@ -32,7 +34,6 @@ def start(enter_password):
     if not PATH_TO_SALT.exists():
         if len(MASTER_PASSWORD) < 10:
             print("minimal length of password - 10 chapters")
-            return 0
         create_salt()
         FERNET = Fernet(master_key())
         create_element("test", "test","test")
@@ -40,11 +41,19 @@ def start(enter_password):
     try:
         show_elements()
         print("Enter")
-    except Exception as e:
+        return True # это надо что бы удобно обрабатывать в интерфейсе
+                    # типо если вход успешный возвращает True
+                    # если нет то False
+    except Exception:
+        # надо сделать что бы не переходило к коду ниже
+        # тоесть что бы просто останавливалась
         print("incorrect password")
-        #print(e)
-        return 0#sys.exit()# здесь мб надо сделать что бы спрашивался, 3 раза
-                # и только потом закрывался
+
+        global counter_of_enter_password
+        counter_of_enter_password += 1
+        if counter_of_enter_password > 3:
+            pyperclip.copy("")
+            sys.exit()
 
 def create_salt():
     if not PATH_TO_SALT.exists():
