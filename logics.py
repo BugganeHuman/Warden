@@ -49,6 +49,7 @@ def start(enter_password):
                 test_decrypt.append(FERNET.decrypt(element))
         if test_decrypt:
             print("Enter")
+            pyperclip.copy("")
             return True # это надо что бы удобно обрабатывать в интерфейсе
                     # типо если вход успешный возвращает True
                     # если нет то False
