@@ -2,6 +2,7 @@ import logics
 import customtkinter
 from pathlib import Path
 
+
 def main():
     while True:
         master_key_input = None
@@ -10,14 +11,8 @@ def main():
                             "minimum 10 chapters\n: ")
         else:
             master_key_input = input("write master key: ")
-        try:
-            #logics.start(master_key_input)
-            if logics.start(master_key_input) == 0:
-                continue
+        if logics.start(master_key_input):
             break
-        except Exception as e:
-            print("incorrect password")
-            continue
     index = 0
     for element in logics.show_elements():
         if index == 0:
