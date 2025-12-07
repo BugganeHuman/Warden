@@ -12,8 +12,6 @@ import pyperclip
 
 CONN = sqlite3.connect("vault.db")
 CURSOR = CONN.cursor()
-SALT_EXISTS = CURSOR.execute("SELECT name FROM sqlite_master"
-                            " WHERE type='table' AND name='meta'").fetchall()
 MASTER_PASSWORD = None
 FERNET = None
 counter_of_enter_password = 0
@@ -30,17 +28,28 @@ def start(enter_password):
         )
         """)
     CONN.commit()
-    if not SALT_EXISTS:
+    if not salt_exists():
         if len(MASTER_PASSWORD) < 10:
             print("minimal length of password - 10 chapters")
+            return False
         create_salt()
         FERNET = Fernet(master_key())
-        create_element("test", "test","test")
+        CURSOR.execute("UPDATE meta SET test_link = ?, test_login = ?," 
+                       " test_password = ?  WHERE flag = 1",
+        (FERNET.encrypt("test".encode()), FERNET.encrypt("test".encode()),
+                    FERNET.encrypt("test".encode())))
+        CONN.commit()
     FERNET = Fernet(master_key())
     try:
-        show_elements() # можно переделать что бы тестовая запись хранилась в meta
-        print("Enter")
-        return True # это надо что бы удобно обрабатывать в интерфейсе
+        CURSOR.execute("SELECT test_link, test_login, test_password FROM meta")
+        test = CURSOR.fetchall()
+        test_decrypt = []
+        for iteration in test:
+            for element in iteration:
+                test_decrypt.append(FERNET.decrypt(element))
+        if test_decrypt:
+            print("Enter")
+            return True # это надо что бы удобно обрабатывать в интерфейсе
                     # типо если вход успешный возвращает True
                     # если нет то False
     except Exception:
@@ -51,14 +60,26 @@ def start(enter_password):
             pyperclip.copy("")
             sys.exit()
 
+def salt_exists():
+    CURSOR.execute("SELECT name FROM sqlite_master"
+                   " WHERE type='table' AND name='meta'")
+    result = bool(CURSOR.fetchone())
+    return result
+
 def create_salt():
-    if not SALT_EXISTS:
-        CURSOR.execute("CREATE TABLE IF NOT EXISTS meta (salt BLOB)")
-        salt = os.urandom(16)
-        CURSOR.execute("INSERT INTO meta (salt) VALUES (?)", (salt,))
+    if not salt_exists(): #баг, вызывается 3 раза, и из за этого создается 3 строки, когда нужна 1
+                # тоесть 3 раза она не является созданной
+
+        CURSOR.execute("""CREATE TABLE IF NOT EXISTS meta (flag INTEGER,salt BLOB,
+                        test_link BLOB, test_login BLOB, test_password BLOB)
+                       """)
         CONN.commit()
-    result = CURSOR.execute("SELECT * FROM meta").fetchall()
-    return result[0] # сдесь возможно проблема из за того что возвращает кортеж
+        salt = os.urandom(16)
+        CURSOR.execute("INSERT INTO meta (flag,salt)"
+                       " VALUES (?,?)", (1, salt))
+        CONN.commit()
+    result = CURSOR.execute("SELECT salt FROM meta").fetchall()
+    return result[0]
 
 def master_key():
     salt = str(create_salt()).encode()
@@ -131,9 +152,6 @@ def find_element (link):
     index_of_list_found = 0
     list_found = []
     for element in show_elements():
-        if index == 0:
-            index += 1
-            continue
         finding_link = element[0]
         result = [chapter for chapter in str(finding_link).lower()
                   if str(link).lower() in str(finding_link).lower()]
@@ -171,9 +189,9 @@ def generate_password (amount, lower_case = False,
     print(result_list)
     return result_list
 
-#show_meta()
+#start("password123")
+#print(SALT_EXISTS)
 #create_salt()
-start("password123")
 #generate_password(10, True, False, True, )
 #print(find_element("a"))
 #update_element(1, "SONY", "JapaneseDude", "oop333")
@@ -181,7 +199,7 @@ start("password123")
 #create_salt()
 #print(show_elements())
 #print("NVIDEA" in show_element_secret_data(4)
-#create_element("Tesla", "Grok", "Elon_Mask")
+#create_element("Apple", "www", "213123")
 #print(show_elements())
 #conn.close()
 # мб надо логику как то распределить на несколько файлов,
