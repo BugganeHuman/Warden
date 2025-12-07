@@ -5,16 +5,15 @@ from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import sqlite3
-from pathlib import Path
 import string
 import secrets
 import pyperclip
 
 
-# мб эти все переменный надо перевести в хай регистр ибо это константы
 CONN = sqlite3.connect("vault.db")
 CURSOR = CONN.cursor()
-PATH_TO_SALT = Path("salt.key")
+SALT_EXISTS = CURSOR.execute("SELECT name FROM sqlite_master"
+                            " WHERE type='table' AND name='meta'").fetchall()
 MASTER_PASSWORD = None
 FERNET = None
 counter_of_enter_password = 0
@@ -31,7 +30,7 @@ def start(enter_password):
         )
         """)
     CONN.commit()
-    if not PATH_TO_SALT.exists():
+    if not SALT_EXISTS:
         if len(MASTER_PASSWORD) < 10:
             print("minimal length of password - 10 chapters")
         create_salt()
@@ -45,10 +44,7 @@ def start(enter_password):
                     # типо если вход успешный возвращает True
                     # если нет то False
     except Exception:
-        # надо сделать что бы не переходило к коду ниже
-        # тоесть что бы просто останавливалась
         print("incorrect password")
-
         global counter_of_enter_password
         counter_of_enter_password += 1
         if counter_of_enter_password > 3:
@@ -56,14 +52,16 @@ def start(enter_password):
             sys.exit()
 
 def create_salt():
-    if not PATH_TO_SALT.exists():
+    if not SALT_EXISTS:
+        CURSOR.execute("CREATE TABLE IF NOT EXISTS meta (salt BLOB)")
         salt = os.urandom(16)
-        with open("salt.key", 'wb') as file:
-            file.write(salt)
-            print("crated ",salt)
+        CURSOR.execute("INSERT INTO meta (salt) VALUES (?)", (salt,))
+        CONN.commit()
+    result = CURSOR.execute("SELECT * FROM meta").fetchall()
+    return result[0] # сдесь возможно проблема из за того что возвращает кортеж
 
 def master_key():
-    salt = open("salt.key", 'rb').read()
+    salt = str(create_salt()).encode()
     kdf = PBKDF2HMAC (
         salt=salt,
         iterations=1_200_000,
@@ -173,16 +171,18 @@ def generate_password (amount, lower_case = False,
     print(result_list)
     return result_list
 
-
-#start("password123")
+#show_meta()
+#create_salt()
+start("password123")
 #generate_password(10, True, False, True, )
 #print(find_element("a"))
-#update_element(1, "Apple", "Tim Cock", "orange135")
+#update_element(1, "SONY", "JapaneseDude", "oop333")
 #delete_element(4)
 #create_salt()
 #print(show_elements())
 #print("NVIDEA" in show_element_secret_data(4)
-#create_element("NVIDEA", "chinese dude", "pi333")
+#create_element("Tesla", "Grok", "Elon_Mask")
 #print(show_elements())
 #conn.close()
-# мб надо придумать как хронить salt в бд вместе с данными
+# мб надо логику как то распределить на несколько файлов,
+#   а то в одном уже много
