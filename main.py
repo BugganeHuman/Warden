@@ -3,13 +3,21 @@ import customtkinter
 from pathlib import Path
 
 def main():
-    master_key_input = None
-    if not Path("salt.key").exists():
-        master_key_input = input("Write password for create your master key, "
+    while True:
+        master_key_input = None
+        if not Path("salt.key").exists():
+            master_key_input = input("Write password for create your master key, "
                             "minimum 10 chapters\n: ")
-    else:
-       master_key_input = input("write master key: ")
-    logics.start(master_key_input)
+        else:
+            master_key_input = input("write master key: ")
+        try:
+            #logics.start(master_key_input)
+            if logics.start(master_key_input) == 0:
+                continue
+            break
+        except Exception as e:
+            print("incorrect password")
+            continue
     index = 0
     for element in logics.show_elements():
         if index == 0:
