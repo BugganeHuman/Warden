@@ -67,9 +67,7 @@ def salt_exists():
     return result
 
 def create_salt():
-    if not salt_exists(): #баг, вызывается 3 раза, и из за этого создается 3 строки, когда нужна 1
-                # тоесть 3 раза она не является созданной
-
+    if not salt_exists():
         CURSOR.execute("""CREATE TABLE IF NOT EXISTS meta (flag INTEGER,salt BLOB,
                         test_link BLOB, test_login BLOB, test_password BLOB)
                        """)
@@ -97,7 +95,7 @@ def create_element(link, login, password):
     login_binary = FERNET.encrypt(login.encode())
     password_binary = FERNET.encrypt(password.encode())
     for element in show_elements():
-        if link and login and password in element:
+        if link in element and login in element and password in element:
             print("This element already added")
             return
     CURSOR.execute("INSERT INTO vault (link, login, password) VALUES (?,?,?)",
@@ -120,7 +118,7 @@ def show_elements (decrypt = True):
         index += 1
     return elements_decrypt
 
-def show_element_secret_data(index, decrypt = True, show_index = False):
+def show_element_secret_data(index, decrypt = True):
     return show_elements(decrypt)[index]
 def delete_element(index):
     CURSOR.execute("DELETE FROM vault WHERE link = ? AND login = ? AND password = ?"
@@ -195,11 +193,11 @@ def generate_password (amount, lower_case = False,
 #generate_password(10, True, False, True, )
 #print(find_element("a"))
 #update_element(1, "SONY", "JapaneseDude", "oop333")
-#delete_element(4)
+#delete_element(1)
 #create_salt()
 #print(show_elements())
 #print("NVIDEA" in show_element_secret_data(4)
-#create_element("Apple", "www", "213123")
+#create_element("Amazon", "JB", "dog0101")
 #print(show_elements())
 #conn.close()
 # мб надо логику как то распределить на несколько файлов,
