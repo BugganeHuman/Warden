@@ -1,4 +1,5 @@
 import logics
+import operations
 import customtkinter
 
 
@@ -12,14 +13,15 @@ def main():
             master_key_input = input("write master key: ")
         if logics.start(master_key_input):
             break
+#_____________________________________________________________________
     index = 0
-    for element in logics.show_elements():
+    for element in operations.show_elements():
         print(f"{index} link = {element[0]} | login = {"*" * len(element[1])}"
               f" | password =  {"*" * len(element[2])}")
         index += 1
     choice_element = input("\nwrite number of element to watch full: ")
     # сдесь надо сделать цикл типо while True
-    list_of_element = logics.show_element_secret_data(int(choice_element))
+    list_of_element = operations.show_element_secret_data(int(choice_element))
     print(f"link = {list_of_element[0]} | login = {list_of_element[1]}"
           f" | password = {list_of_element[2]}")
 
