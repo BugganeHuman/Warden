@@ -19,7 +19,6 @@ counter_of_enter_password = 0
 def start(enter_password):
     global MASTER_PASSWORD
     global FERNET
-    MASTER_PASSWORD = enter_password
     CURSOR.execute("""
         CREATE TABLE IF NOT EXISTS vault (
         link BLOB, 
@@ -29,17 +28,19 @@ def start(enter_password):
         """)
     CONN.commit()
     if not salt_exists():
-        if len(MASTER_PASSWORD) < 10:
+        if len(enter_password) < 10:
             print("minimal length of password - 10 chapters")
             return False
         create_salt()
-        FERNET = Fernet(master_key())
+        MASTER_PASSWORD = master_key(enter_password)
+        FERNET = Fernet(MASTER_PASSWORD)
         CURSOR.execute("UPDATE meta SET test_link = ?, test_login = ?," 
                        " test_password = ?  WHERE flag = 1",
         (FERNET.encrypt("test".encode()), FERNET.encrypt("test".encode()),
                     FERNET.encrypt("test".encode())))
         CONN.commit()
-    FERNET = Fernet(master_key())
+    MASTER_PASSWORD = master_key(enter_password)
+    FERNET = Fernet(MASTER_PASSWORD)
     try:
         CURSOR.execute("SELECT test_link, test_login, test_password FROM meta")
         test = CURSOR.fetchall()
@@ -80,7 +81,7 @@ def create_salt():
     result = CURSOR.execute("SELECT salt FROM meta").fetchall()
     return result[0]
 
-def master_key():
+def master_key(password):
     salt = str(create_salt()).encode()
     kdf = PBKDF2HMAC (
         salt=salt,
@@ -88,7 +89,7 @@ def master_key():
         length=32,
         algorithm=hashes.SHA256(),
     )
-    key = base64.urlsafe_b64encode(kdf.derive(MASTER_PASSWORD.encode()))
+    key = base64.urlsafe_b64encode(kdf.derive(password.encode()))
     return key
 
 def db_close():
@@ -119,4 +120,4 @@ def generate_password (amount = 10, lower_case = False,
             result += secrets.choice(result_string_chapters)
         result_list.append(result)
     return result_list
-                           
+
