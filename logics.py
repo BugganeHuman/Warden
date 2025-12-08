@@ -9,6 +9,7 @@ import string
 import secrets
 import pyperclip
 
+
 CONN = sqlite3.connect("vault.db")
 CURSOR = CONN.cursor()
 MASTER_PASSWORD = None
@@ -93,7 +94,7 @@ def master_key():
 def db_close():
     CONN.close()
 
-def generate_password (amount, lower_case = False,
+def generate_password (amount = 10, lower_case = False,
                        upper_case = False, numbers = False,
                        special_symbols = False):
     lower_case_all = string.ascii_lowercase
@@ -117,22 +118,5 @@ def generate_password (amount, lower_case = False,
         for i in range(amount):
             result += secrets.choice(result_string_chapters)
         result_list.append(result)
-    print(result_list)
     return result_list
-
-
-#start("password123")
-#print(SALT_EXISTS)
-#create_salt()
-#generate_password(10, True, False, True, )
-#print(find_element("a"))
-#update_element(1, "SONY", "JapaneseDude", "oop333")
-#delete_element(1)
-#create_salt()
-#print(show_elements())
-#print("NVIDEA" in show_element_secret_data(4)
-#operations.create_element("Google", "Dude", "zero0101")
-#print(show_elements())
-#conn.close()
-# мб надо логику как то распределить на несколько файлов,
-#   а то в одном уже много
+                           
