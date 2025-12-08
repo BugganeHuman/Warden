@@ -66,17 +66,23 @@ def main():
                     except Exception as e:
                         print(e)
                 elif choice_operation == "4":
-                    pass # сдесь надо правильно отображать
+                    pass # сдесь надо правельно отображать
         elif choice == "3":
-            print("To refuse the condition,"
+            print("\nTo refuse the condition,"
                   " don't write anything and just press Enter\n"
                   "To agree to use, enter any text")
-            logics.generate_password(input("amount chapters: "),
+            try:
+                passwords =  logics.generate_password(int(input(
+                                    "\namount chapters: ")),
                                      input("lower case(abc): "),
                                      input("upper case(ABC): "),
                                      input("numbers(123): "),
-                                     input("special symbols(|!,.-): "))
-
+                                     input("special symbols(@#&-.,): "))
+                for password in passwords:
+                   print(f"\n{password}")
+                input()
+            except Exception as e:
+                print(e)
 
 #_____________________________________________________________________
 if __name__ == "__main__":
