@@ -14,17 +14,60 @@ def main():
         if logics.start(master_key_input):
             break
 #_____________________________________________________________________
-    index = 0
-    for element in operations.show_elements():
-        print(f"{index} link = {element[0]} | login = {"*" * len(element[1])}"
-              f" | password =  {"*" * len(element[2])}")
-        index += 1
-    choice_element = input("\nwrite number of element to watch full: ")
-    # сдесь надо сделать цикл типо while True
-    list_of_element = operations.show_element_secret_data(int(choice_element))
-    print(f"link = {list_of_element[0]} | login = {list_of_element[1]}"
-          f" | password = {list_of_element[2]}")
+    def show():
+        index = 0
+        for element in operations.show_elements():
+            print(f"\n{index} link = {element[0]} | login = {"*" * len(element[1])}"
+                f" | password =  {"*" * len(element[2])}\n")
+            index += 1
+    while True:
+        show()
+        choice = input("\nwrite number:\n\n"
+                       "0 - to exit\n\n"
+                       "1 - watch full some element\n\n"
+                       "2 - operations with elements\n\n"
+                       "3 - generate password: ")
 
+        if choice == "0":
+            break
+        elif choice == "1":
+            choice_element = input("\nwrite number of element to watch full: ")
+            list_of_element = operations.show_element_secret_data(int(choice_element))
+            print(f"\n\nlink = {list_of_element[0]} | login = {list_of_element[1]}"
+                f" | password = {list_of_element[2]}\n\n")
+        elif choice == "2":
+            while True:
+                show()
+                choice_operation = input("\nwrite number:\n\n"
+                                     "0 - to return\n\n"
+                                     "1 - to create new element\n\n"
+                                     "2 - to update element\n\n"
+                                     "3 - to delete element\n\n"
+                                     "4 - to find element: ")
+                if choice_operation == "0":
+                    break
+                elif choice_operation == "1":
+                    operations.create_element(input("\nwrite link: "),
+                                              input("\nwrite login: "),
+                                              input("\nwrite password: "))
+                    print("\ndone\n")
+                elif choice_operation == "2":
+                    operations.update_element(int(input
+                                    ("\nwrite index of updating element: ")),
+                                              input("\nwrite new link: "),
+                                              input("\nwrite new login: "),
+                                              input("\nwrite new password: "))
+                    print("\ndone\n")
+                elif choice_operation == "3":
+                    try:
+                        operations.delete_element(int(input(
+                            "write index of deleting element: "
+                        )))
+                    except Exception as e:
+                        print(e)
+
+
+#_____________________________________________________________________
 if __name__ == "__main__":
     main()
     logics.db_close()
