@@ -35,6 +35,7 @@ def main():
             list_of_element = operations.show_element_secret_data(int(choice_element))
             print(f"\n\nlink = {list_of_element[0]} | login = {list_of_element[1]}"
                 f" | password = {list_of_element[2]}\n\n")
+            input()
         elif choice == "2":
             while True:
                 show()
@@ -46,6 +47,7 @@ def main():
                                      "4 - to find element: ")
                 if choice_operation == "0":
                     break
+
                 elif choice_operation == "1":
                     operations.create_element(input("\nwrite link: "),
                                               input("\nwrite login: "),
@@ -66,7 +68,13 @@ def main():
                     except Exception as e:
                         print(e)
                 elif choice_operation == "4":
-                    pass # сдесь надо правельно отображать
+                    result = operations.find_element(input("\nwrite text of link: "))
+                    if result:
+                        for element in result:
+                            print(f"{element[3]} link = {element[0]} login = {'*' * len(element[1])} password = {'*' * len(element[2])}")
+                    else:
+                        print("nothing found")
+                    input()
         elif choice == "3":
             print("\nTo refuse the condition,"
                   " don't write anything and just press Enter\n"
