@@ -70,4 +70,3 @@ def find_element (link):
             index_of_list_found += 1
         index += 1
     return list_found
-    
