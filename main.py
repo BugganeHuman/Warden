@@ -2,23 +2,25 @@ import operations
 import logics
 import customtkinter
 
+
+def show():
+    index = 0
+    for element in operations.show_elements():
+        print(f"\n{index} link = {element[0]} | login = {"*" * len(element[1])}"
+            f" | password =  {"*" * len(element[2])}\n")
+        index += 1
+
 def main():
     while True:
         master_key_input = None
         if not logics.salt_exists():
-            master_key_input = input("Write password for create your master key, "
+            master_key_input = input("\nWrite password for create your master key, "
                             "minimum 10 chapters\n: ")
         else:
-            master_key_input = input("write master key: ")
+            master_key_input = input("\nwrite master key: ")
         if logics.start(master_key_input):
             break
-            
-    def show():
-        index = 0
-        for element in operations.show_elements():
-            print(f"\n{index} link = {element[0]} | login = {"*" * len(element[1])}"
-                f" | password =  {"*" * len(element[2])}\n")
-            index += 1
+#_____________________________________________________________________
     while True:
         show()
         choice = input("\nwrite number:\n\n"
@@ -62,7 +64,7 @@ def main():
                 elif choice_operation == "3":
                     try:
                         operations.delete_element(int(input(
-                            "write index of deleting element: "
+                            "\nwrite index of deleting element: "
                         )))
                     except Exception as e:
                         print(e)
@@ -70,7 +72,7 @@ def main():
                     result = operations.find_element(input("\nwrite text of link: "))
                     if result:
                         for element in result:
-                            print(f"{element[3]} link = {element[0]} login = {'*' * len(element[1])} password = {'*' * len(element[2])}")
+                            print(f"\n{element[3]} link = {element[0]} login = {'*' * len(element[1])} password = {'*' * len(element[2])}")
                     else:
                         print("nothing found")
                     input()
@@ -91,7 +93,7 @@ def main():
             except Exception as e:
                 print(e)
 
-
+#_____________________________________________________________________
 if __name__ == "__main__":
     main()
     logics.db_close()
