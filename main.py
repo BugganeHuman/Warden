@@ -12,7 +12,7 @@ def main():
             master_key_input = input("write master key: ")
         if logics.start(master_key_input):
             break
-
+            
     def show():
         index = 0
         for element in operations.show_elements():
