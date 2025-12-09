@@ -29,8 +29,7 @@ def start(enter_password):
     if not salt_exists():
         if not registration(enter_password):
            return False
-
-    try: # баг, когда создаешь пароль, он сначала его создает и потом опять спрашивает
+    try:
         allow_entry = check_hash(enter_password)
         if allow_entry:
             print("Enter")
@@ -144,19 +143,3 @@ def generate_password (amount = 10, lower_case = False,
             result += secrets.choice(result_string_chapters)
         result_list.append(result)
     return result_list
-
-
-#start("password123")
-#print(SALT_EXISTS)
-#create_salt()
-#generate_password(10, True, False, True, )
-#print(find_element("a"))
-#update_element(1, "SONY", "JapaneseDude", "oop333")
-#delete_element(1)
-#create_salt()
-#print(show_elements())
-#print("NVIDEA" in show_element_secret_data(4)
-#operations.create_element("Google", "Dude", "zero0101")
-#print(show_elements())
-#conn.close()
-# мб надо логику как то распределить на несколько файлов,
