@@ -31,15 +31,19 @@ def start(enter_password):
     if not salt_exists():
         registration(enter_password)
     try:
-       return check_hash(enter_password) # надо сделать что бы если возвращает False
-                                        # делалость то что ниже
-    except Exception:
-        print("incorrect password")
-        global counter_of_enter_password
-        counter_of_enter_password += 1
-        if counter_of_enter_password > 3:
-            pyperclip.copy("")
-            sys.exit()
+        allow_entry = check_hash(enter_password) # надо сделать что бы если возвращает False
+        if allow_entry:
+            print("Enter")
+            return check_hash(enter_password)
+        else:
+            print("incorrect password")
+            global counter_of_enter_password
+            counter_of_enter_password += 1
+            if counter_of_enter_password > 3:
+                pyperclip.copy("")
+                sys.exit()
+    except Exception as e:
+        print(e)
 
 def registration (password):
     if len(password) < 10:
@@ -49,7 +53,6 @@ def registration (password):
     salt = create_salt()
     CURSOR.execute("SELECT iterations FROM meta WHERE flag = 1")
     iterations = CURSOR.fetchone()
-    print(type(salt))
     create_hash = hashlib.pbkdf2_hmac(
         hash_name="sha256",
         password=str(password).encode(),
@@ -60,7 +63,6 @@ def registration (password):
     correct_hash = base64.b64encode(create_hash).decode()
     CURSOR.execute("UPDATE meta set hash = ? WHERE flag = 1", (correct_hash,))
     CONN.commit()
-
 
 def check_hash(password):
     global FERNET
@@ -79,7 +81,6 @@ def check_hash(password):
         iterations=iterations[0],
         dklen=32
     )
-    print(salt[0])
     return base64.b64encode(create_hash).decode() == correct_hash
 
 def salt_exists():
