@@ -3,95 +3,48 @@ import logics
 import customtkinter
 
 
-def show():
-    index = 0
-    for element in operations.show_elements():
-        print(f"\n{index} link = {element[0]} | login = {"*" * len(element[1])}"
-            f" | password =  {"*" * len(element[2])}\n")
-        index += 1
-
 def main():
-    while True:
-        master_key_input = None
-        if not logics.salt_exists():
-            master_key_input = input("\nWrite password for create your master key, "
-                            "minimum 10 chapters\n: ")
+    app = customtkinter.CTk()
+    app.geometry("1000x800")
+    app.title("Warden")
+    customtkinter.set_appearance_mode("dark")
+    customtkinter.set_default_color_theme("green")
+    frame_start = customtkinter.CTkFrame(app)
+    frame_vault = customtkinter.CTkFrame(app)
+
+    check_entry = customtkinter.CTkEntry(frame_start, placeholder_text="Enter Password",
+                            width=500, height=50, font=("Arial", 44), show="*" )
+
+    check_btn = customtkinter.CTkButton(frame_start,text="Enter",command=lambda :
+        start(check_entry.get()), width=50, height=50, font=("Arial", 34))
+
+    check_label = customtkinter.CTkLabel(frame_start, text="", width=300,
+                    height=50, font=("Arial", 44))
+
+    check_entry.bind("<Return>", lambda event : start(check_entry.get()))
+    check_entry.grid(row=100, column=100, pady=350, padx=230)
+    check_btn.place(x=730, y=352)
+    check_label.place(x=320, y=420)
+
+    def start(password):
+        nonlocal check_label
+        nonlocal check_entry
+        check_entry.delete(0, "end")
+        if logics.start(password):
+            check_label.configure(text="Enter permitted")
+            show_vault_frame()
         else:
-            master_key_input = input("\nwrite master key: ")
-        if logics.start(master_key_input):
-            break
-#_____________________________________________________________________
-    while True:
-        show()
-        choice = input("\nwrite number:\n\n"
-                       "0 - to exit\n\n"
-                       "1 - watch full some element\n\n"
-                       "2 - operations with elements\n\n"
-                       "3 - generate password: ")
+            check_label.configure(text="Incorrect password")
 
-        if choice == "0":
-            break
-        elif choice == "1":
-            choice_element = input("\nwrite number of element to watch full: ")
-            list_of_element = operations.show_element_secret_data(int(choice_element))
-            print(f"\n\nlink = {list_of_element[0]} | login = {list_of_element[1]}"
-                f" | password = {list_of_element[2]}\n\n")
-            input()
-        elif choice == "2":
-            while True:
-                show()
-                choice_operation = input("\nwrite number:\n\n"
-                                     "0 - to return\n\n"
-                                     "1 - to create new element\n\n"
-                                     "2 - to update element\n\n"
-                                     "3 - to delete element\n\n"
-                                     "4 - to find element: ")
-                if choice_operation == "0":
-                    break
+    def show_start_frame():
+        frame_start.pack(fill="both", expand=True)
 
-                elif choice_operation == "1":
-                    operations.create_element(input("\nwrite link: "),
-                                              input("\nwrite login: "),
-                                              input("\nwrite password: "))
-                    print("\ndone\n")
-                elif choice_operation == "2":
-                    operations.update_element(int(input
-                                    ("\nwrite index of updating element: ")),
-                                              input("\nwrite new link: "),
-                                              input("\nwrite new login: "),
-                                              input("\nwrite new password: "))
-                    print("\ndone\n")
-                elif choice_operation == "3":
-                    try:
-                        operations.delete_element(int(input(
-                            "\nwrite index of deleting element: "
-                        )))
-                    except Exception as e:
-                        print(e)
-                elif choice_operation == "4":
-                    result = operations.find_element(input("\nwrite text of link: "))
-                    if result:
-                        for element in result:
-                            print(f"\n{element[3]} link = {element[0]} login = {'*' * len(element[1])} password = {'*' * len(element[2])}")
-                    else:
-                        print("nothing found")
-                    input()
-        elif choice == "3":
-            print("\nTo refuse the condition,"
-                  " don't write anything and just press Enter\n"
-                  "To agree to use, enter any text")
-            try:
-                passwords =  logics.generate_password(int(input(
-                                    "\namount chapters: ")),
-                                     input("lower case(abc): "),
-                                     input("upper case(ABC): "),
-                                     input("numbers(123): "),
-                                     input("special symbols(@#&-.,): "))
-                for password in passwords:
-                   print(f"\n{password}")
-                input()
-            except Exception as e:
-                print(e)
+    def show_vault_frame(): # надо будет заполнить его
+        frame_start.pack_forget()
+        frame_vault.pack(fill="both", expand=True)
+    show_start_frame()
+
+    app.mainloop()
 
 #_____________________________________________________________________
 if __name__ == "__main__":
