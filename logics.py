@@ -1,6 +1,7 @@
-import base64
 import os
 import sys
+import hashlib
+import base64
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -28,32 +29,10 @@ def start(enter_password):
         """)
     CONN.commit()
     if not salt_exists():
-        if len(enter_password) < 10:
-            print("minimal length of password - 10 chapters")
-            return False
-        create_salt()
-        MASTER_PASSWORD = master_key(enter_password)
-        FERNET = Fernet(MASTER_PASSWORD)
-        CURSOR.execute("UPDATE meta SET test_link = ?, test_login = ?," 
-                       " test_password = ?  WHERE flag = 1",
-        (FERNET.encrypt("test".encode()), FERNET.encrypt("test".encode()),
-                    FERNET.encrypt("test".encode())))
-        CONN.commit()
-    MASTER_PASSWORD = master_key(enter_password)
-    FERNET = Fernet(MASTER_PASSWORD)
+        registration(enter_password)
     try:
-        CURSOR.execute("SELECT test_link, test_login, test_password FROM meta")
-        test = CURSOR.fetchall()
-        test_decrypt = []
-        for iteration in test:
-            for element in iteration:
-                test_decrypt.append(FERNET.decrypt(element))
-        if test_decrypt:
-            print("Enter")
-            pyperclip.copy("")
-            return True # это надо что бы удобно обрабатывать в интерфейсе
-                    # типо если вход успешный возвращает True
-                    # если нет то False
+        check_hash(enter_password)
+        print("Enter")
     except Exception:
         print("incorrect password")
         global counter_of_enter_password
@@ -61,6 +40,46 @@ def start(enter_password):
         if counter_of_enter_password > 3:
             pyperclip.copy("")
             sys.exit()
+
+def registration (password):
+    if len(password) < 10:
+        print("minimal length of password - 10 chapters")
+        return False
+    create_salt()
+    salt = create_salt()
+    CURSOR.execute("SELECT iterations FROM meta WHERE flag = 1")
+    iterations = CURSOR.fetchone()
+    print(type(salt))
+    create_hash = hashlib.pbkdf2_hmac(
+        hash_name="sha256",
+        password=str(password).encode(),
+        salt=salt[0],
+        iterations=iterations[0],
+        dklen=32
+    )
+    correct_hash = base64.b64encode(create_hash).decode()
+    CURSOR.execute("UPDATE meta set hash = ? WHERE flag = 1", (correct_hash,))
+    CONN.commit()
+
+def check_hash(password):
+    global FERNET
+    global MASTER_PASSWORD
+    MASTER_PASSWORD = master_key(password)
+    FERNET = Fernet(MASTER_PASSWORD)
+    salt = create_salt()
+    CURSOR.execute("SELECT iterations FROM meta WHERE flag = 1")
+    iterations = CURSOR.fetchone()
+    CURSOR.execute("SELECT hash FROM meta WHERE flag = 1")
+    correct_hash = CURSOR.fetchone()[0]
+    create_hash = hashlib.pbkdf2_hmac(
+        hash_name="sha256",
+        password=str(password).encode(),
+        salt=salt[0],
+        iterations=iterations[0],
+        dklen=32
+    )
+    print(salt[0])
+    return base64.b64encode(create_hash).decode() == correct_hash
 
 def salt_exists():
     CURSOR.execute("SELECT name FROM sqlite_master"
@@ -71,21 +90,23 @@ def salt_exists():
 def create_salt():
     if not salt_exists():
         CURSOR.execute("""CREATE TABLE IF NOT EXISTS meta (flag INTEGER,salt BLOB,
-                        test_link BLOB, test_login BLOB, test_password BLOB)
+                        hash TEXT, iterations INTEGER)
                        """)
         CONN.commit()
         salt = os.urandom(16)
-        CURSOR.execute("INSERT INTO meta (flag,salt)"
-                       " VALUES (?,?)", (1, salt))
+        CURSOR.execute("INSERT INTO meta (flag,salt, iterations)"
+                       " VALUES (?,?,?)", (1, salt, 1200000))
         CONN.commit()
     result = CURSOR.execute("SELECT salt FROM meta").fetchall()
     return result[0]
 
 def master_key(password):
     salt = str(create_salt()).encode()
+    CURSOR.execute("SELECT iterations FROM meta WHERE flag = 1")
+    iterations = CURSOR.fetchone()
     kdf = PBKDF2HMAC (
         salt=salt,
-        iterations=1_200_000,
+        iterations=iterations[0],
         length=32,
         algorithm=hashes.SHA256(),
     )
@@ -121,3 +142,18 @@ def generate_password (amount = 10, lower_case = False,
         result_list.append(result)
     return result_list
 
+
+#start("password123")
+#print(SALT_EXISTS)
+#create_salt()
+#generate_password(10, True, False, True, )
+#print(find_element("a"))
+#update_element(1, "SONY", "JapaneseDude", "oop333")
+#delete_element(1)
+#create_salt()
+#print(show_elements())
+#print("NVIDEA" in show_element_secret_data(4)
+#operations.create_element("Google", "Dude", "zero0101")
+#print(show_elements())
+#conn.close()
+# мб надо логику как то распределить на несколько файлов,
