@@ -29,10 +29,11 @@ def start(enter_password):
     if not salt_exists():
         if not registration(enter_password):
            return False
+
     try:
         allow_entry = check_hash(enter_password)
         if allow_entry:
-            print("Enter")
+            print("\nEnter permitted")
             return True
         else:
             print("incorrect password")
