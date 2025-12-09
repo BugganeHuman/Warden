@@ -27,7 +27,9 @@ def start(enter_password):
         """)
     CONN.commit()
     if not salt_exists():
-       return registration(enter_password)
+        if not registration(enter_password):
+           return False
+
     try: # баг, когда создаешь пароль, он сначала его создает и потом опять спрашивает
         allow_entry = check_hash(enter_password)
         if allow_entry:
@@ -44,7 +46,6 @@ def start(enter_password):
         print(e)
 
 def registration (password):
-    print("registration now ")
     if len(password) < 10:
         print("minimal length of password - 10 chapters")
         return False
@@ -62,9 +63,9 @@ def registration (password):
     correct_hash = base64.b64encode(create_hash).decode()
     CURSOR.execute("UPDATE meta set hash = ? WHERE flag = 1", (correct_hash,))
     CONN.commit()
+    return True
 
 def check_hash(password):
-    print("check_hash now")
     global FERNET
     global MASTER_PASSWORD
     MASTER_PASSWORD = master_key(password)
