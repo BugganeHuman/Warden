@@ -31,8 +31,8 @@ def start(enter_password):
     if not salt_exists():
         registration(enter_password)
     try:
-        check_hash(enter_password)
-        print("Enter")
+       return check_hash(enter_password) # надо сделать что бы если возвращает False
+                                        # делалость то что ниже
     except Exception:
         print("incorrect password")
         global counter_of_enter_password
@@ -60,6 +60,7 @@ def registration (password):
     correct_hash = base64.b64encode(create_hash).decode()
     CURSOR.execute("UPDATE meta set hash = ? WHERE flag = 1", (correct_hash,))
     CONN.commit()
+
 
 def check_hash(password):
     global FERNET
