@@ -18,8 +18,6 @@ FERNET = None
 counter_of_enter_password = 0
 
 def start(enter_password):
-    global MASTER_PASSWORD
-    global FERNET
     CURSOR.execute("""
         CREATE TABLE IF NOT EXISTS vault (
         link BLOB, 
@@ -29,12 +27,12 @@ def start(enter_password):
         """)
     CONN.commit()
     if not salt_exists():
-        registration(enter_password)
-    try:
-        allow_entry = check_hash(enter_password) # надо сделать что бы если возвращает False
+       return registration(enter_password)
+    try: # баг, когда создаешь пароль, он сначала его создает и потом опять спрашивает
+        allow_entry = check_hash(enter_password)
         if allow_entry:
             print("Enter")
-            return check_hash(enter_password)
+            return True
         else:
             print("incorrect password")
             global counter_of_enter_password
@@ -46,6 +44,7 @@ def start(enter_password):
         print(e)
 
 def registration (password):
+    print("registration now ")
     if len(password) < 10:
         print("minimal length of password - 10 chapters")
         return False
@@ -65,6 +64,7 @@ def registration (password):
     CONN.commit()
 
 def check_hash(password):
+    print("check_hash now")
     global FERNET
     global MASTER_PASSWORD
     MASTER_PASSWORD = master_key(password)
