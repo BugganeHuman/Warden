@@ -29,6 +29,7 @@ def main():
     #check_label.place(x=320, y=420)
 
     #______________________________________________________________
+    
     generate_password_btn = customtkinter.CTkButton(frame_vault,
             text="generate\npassword", width=150, height=50, font=("Verdana", 30),
                                     fg_color="forestgreen", text_color="ivory" )
@@ -43,6 +44,7 @@ def main():
         index_label.grid(row=row, column=2, padx=10)
         row += 1
         index += 1
+        
     #______________________________________________________________
     def start(password):
         nonlocal check_label
@@ -71,3 +73,4 @@ def main():
 if __name__ == "__main__":
     main()
     logics.db_close()
+
