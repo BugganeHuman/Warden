@@ -22,14 +22,27 @@ def main():
                     height=50, font=("Verdana", 44))
 
     check_entry.bind("<Return>", lambda event : start(check_entry.get()))
-    check_entry.grid(row=100, column=100, pady=350, padx=230)
-    check_btn.place(x=730, y=352)
-    check_label.place(x=320, y=420)
+    check_entry.grid(row=0, column=0, sticky="") # не работает нихуя
+    check_btn.grid(row=0, column=1,pady=0, padx=1)
+    check_label.grid(row=1, column=0, sticky="nsew" )
+    #check_btn.place(x=730, y=352)
+    #check_label.place(x=320, y=420)
+
     #______________________________________________________________
     generate_password_btn = customtkinter.CTkButton(frame_vault,
-            text="generate\npassword", width=150, height=50, font=("Verdana", 30), fg_color="forestgreen", text_color="ivory" )
-    generate_password_btn.place(x=600, y=5)
-    #password123
+            text="generate\npassword", width=150, height=50, font=("Verdana", 30),
+                                    fg_color="forestgreen", text_color="ivory" )
+    generate_password_btn.grid(row=1, column=20, padx=500, sticky="n")
+    test_list = ["dog", "cat", "elephant", "squirrel", "bear"]
+    index = 0
+    row = 0
+    for element in test_list:
+        element_label = customtkinter.CTkLabel(frame_vault, text=element, font= ("Verdana", 25), text_color="ivory")
+        index_label = customtkinter.CTkLabel(frame_vault, text=str(index),font= ("Verdana", 25), text_color="ivory" )
+        element_label.grid(row=row, column=1)
+        index_label.grid(row=row, column=2, padx=10)
+        row += 1
+        index += 1
     #______________________________________________________________
     def start(password):
         nonlocal check_label
