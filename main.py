@@ -2,8 +2,6 @@ import operations
 import logics
 import customtkinter
 
-from logics import generate_password
-
 
 def main():
     app = customtkinter.CTk()
@@ -15,13 +13,13 @@ def main():
     frame_vault = customtkinter.CTkFrame(app)
 
     check_entry = customtkinter.CTkEntry(frame_start, placeholder_text="Enter Password",
-                            width=500, height=50, font=("Arial", 44), show="*" )
+                            width=500, height=50, font=("Verdana", 44), show="*" )
 
     check_btn = customtkinter.CTkButton(frame_start,text="Enter",command=lambda :
-        start(check_entry.get()), width=50, height=50, font=("Arial", 34))
+        start(check_entry.get()), width=50, height=50, font=("Verdana", 34))
 
     check_label = customtkinter.CTkLabel(frame_start, text="", width=300,
-                    height=50, font=("Arial", 44))
+                    height=50, font=("Verdana", 44))
 
     check_entry.bind("<Return>", lambda event : start(check_entry.get()))
     check_entry.grid(row=100, column=100, pady=350, padx=230)
