@@ -3,7 +3,13 @@ import logics
 import customtkinter
 
 
-def main():
+class App(customtkinter.CTk):
+    def __init__(self):
+        super().__init__()
+
+        self.title()
+        self.geometry("1000x800")
+        """
     app = customtkinter.CTk()
     app.geometry("1000x800")
     app.title("Warden")
@@ -20,16 +26,19 @@ def main():
 
     check_label = customtkinter.CTkLabel(frame_start, text="", width=300,
                     height=50, font=("Verdana", 44))
-
     check_entry.bind("<Return>", lambda event : start(check_entry.get()))
-    check_entry.grid(row=0, column=0, sticky="") # не работает нихуя
-    check_btn.grid(row=0, column=1,pady=0, padx=1)
-    check_label.grid(row=1, column=0, sticky="nsew" )
+    frame_start.grid_rowconfigure((0, 1), weight=1)
+    frame_start.grid_columnconfigure((0, 1), weight=1)
+    #frame_start.grid_rowconfigure(1, weight=0)
+    #frame_start.grid_columnconfigure(1, weight=1)
+
+    check_entry.grid(row=0, column=0, columnspan=2 ) # не работает нихуя
+    check_btn.grid(row=0, column=1 )
+    check_label.grid(row=1, column=0 )
     #check_btn.place(x=730, y=352)
     #check_label.place(x=320, y=420)
 
     #______________________________________________________________
-    
     generate_password_btn = customtkinter.CTkButton(frame_vault,
             text="generate\npassword", width=150, height=50, font=("Verdana", 30),
                                     fg_color="forestgreen", text_color="ivory" )
@@ -44,7 +53,6 @@ def main():
         index_label.grid(row=row, column=2, padx=10)
         row += 1
         index += 1
-        
     #______________________________________________________________
     def start(password):
         nonlocal check_label
@@ -70,7 +78,8 @@ def main():
     app.mainloop()
 
 #_____________________________________________________________________
+"""
 if __name__ == "__main__":
-    main()
+    app = App()
+    app.mainloop()
     logics.db_close()
-
