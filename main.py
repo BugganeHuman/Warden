@@ -2,7 +2,6 @@ import operations
 import logics
 import customtkinter
 
-
 def main():
     app = customtkinter.CTk()
     app.geometry("1000x800")
@@ -93,16 +92,27 @@ def main():
         elements_frame.place(x=0, y=100)
 
     def check_element(index):
+
+        def copy(element):
+            app.clipboard_clear()
+            app.clipboard_append(element.cget("text"))
+            correct_text = element.cget("text")
+            element.configure(text="copied")
+            app.after(1000, lambda : element.configure(text=correct_text))
+            app.after(15000, lambda : (app.clipboard_clear(),app.clipboard_append("")))
         check_modal = customtkinter.CTkToplevel(app)
         check_modal.title("check")
         check_modal.geometry("600x200")
         check_modal.grab_set()
         link = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[0], font=("Verdana", 30))
+        link.bind("<Button-1>",lambda event: copy(link))
         link.pack(pady=15)
         login = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[1], font=("Verdana", 30))
         login.pack(pady=15)
+        login.bind("<Button-1>",lambda event: copy(login))
         password = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[2], font=("Verdana", 30))
         password.pack(pady=15)
+        password.bind("<Button-1>",lambda event: copy(password))
     show_start_frame()
     app.mainloop()
 
