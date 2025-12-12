@@ -14,7 +14,7 @@ def main():
     frame_vault = customtkinter.CTkFrame(app)
     elements_frame = customtkinter.CTkScrollableFrame(frame_vault, width=1000, height=900)
 #___________________________________________________________________
-    # баг, код выполняется весь сразу, когда надо что бы выполнялся сначала start  потом все остальное
+
     check_entry = customtkinter.CTkEntry(frame_start, placeholder_text="Enter Password",
                             width=500, height=50, font=("Verdana", 44), show="*" )
 
@@ -27,7 +27,6 @@ def main():
     check_entry.place(x=220, y=350)
     check_btn_start.place(x=730, y=352)
     check_label.place(x=270, y=420)
-
 
     #______________________________________________________________
     def creat_vault_widgets():
@@ -55,8 +54,9 @@ def main():
 
             check_btn = customtkinter.CTkButton(elements_frame, text="check",
                 font=("Verdana", 25), width=75, height=40, text_color="ivory",
-                fg_color="orange", hover_color= "sienna", command=lambda : check_element(check_btn.grid_info()["row"]))
+                fg_color="orange", hover_color= "sienna")
             check_btn.grid(row=row, column=4,  pady=10, padx=20, sticky="e")
+            check_btn.configure(command= lambda b=check_btn: check_element(b.grid_info()["row"]))
 
             delete_btn = customtkinter.CTkButton(elements_frame, text="delete",
                 font=("Verdana", 25), width=75, height=40, text_color="ivory", fg_color="red", hover_color="dark red" )
@@ -97,13 +97,12 @@ def main():
         check_modal.title("check")
         check_modal.geometry("600x200")
         check_modal.grab_set()
-        operations.show_element_secret_data(index)
-        example = customtkinter.CTkLabel(check_modal, text=index, font=("Verdana", 30))
-        example.grid_rowconfigure(0, weight=1)
-        example.grid_columnconfigure(0 , weight=1)
-        example.pack(expand=True)
-        example.pack(anchor="center")
-
+        link = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[0], font=("Verdana", 30))
+        link.pack(pady=15)
+        login = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[1], font=("Verdana", 30))
+        login.pack(pady=15)
+        password = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[2], font=("Verdana", 30))
+        password.pack(pady=15)
     show_start_frame()
     app.mainloop()
 
