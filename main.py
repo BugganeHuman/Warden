@@ -6,7 +6,7 @@ def main():
     app = customtkinter.CTk()
     app.geometry("1000x800")
     app.title("Warden")
-    customtkinter.set_appearance_mode("system")
+    customtkinter.set_appearance_mode("light")
     customtkinter.set_default_color_theme("green")
     app.resizable(False, False)
     frame_start = customtkinter.CTkFrame(app)
@@ -32,7 +32,31 @@ def main():
         generate_password_btn = customtkinter.CTkButton(frame_vault,
             text="generate\npassword", width=150, height=50, font=("Verdana", 30),
                                     fg_color="forestgreen", text_color="ivory" )
-        generate_password_btn.place(x=600, y=10)
+        generate_password_btn.place(x=670, y=10)
+
+        add_link_entry = customtkinter.CTkEntry(frame_vault,
+            placeholder_text="new link", width=180, height=80, font=("Verdana", 25))
+        add_link_entry.place(x = 5, y = 10)
+
+        add_login_entry = customtkinter.CTkEntry(frame_vault,
+            placeholder_text="new login", width=180, height=80, font=("Verdana", 25))
+        add_login_entry.place(x=195, y = 10)
+
+        add_password_entry = customtkinter.CTkEntry(frame_vault,
+            placeholder_text="new pass", width=180, height=80, font=("Verdana", 25))
+        add_password_entry.place(x = 385, y = 10)
+        add_btn = customtkinter.CTkButton(frame_vault, text="ADD", width=80,
+            height=80,font=("Verdana", 30), fg_color="medium slate blue",
+                hover_color="dodger blue", command= lambda : add_element())
+        add_btn.place(x = 575, y = 10)
+
+        def add_element(): # надо сделать, что бы таблица обновлялась после добавление нового элемента
+            if add_link_entry.get() and add_login_entry and add_password_entry:
+                operations.create_element(add_link_entry.get(),
+                    add_login_entry.get(), add_password_entry.get())
+
+                show_vault_frame() # не то
+
 
 
 
@@ -100,6 +124,7 @@ def main():
             element.configure(text="copied")
             app.after(1000, lambda : element.configure(text=correct_text))
             app.after(15000, lambda : (app.clipboard_clear(),app.clipboard_append("")))
+
         check_modal = customtkinter.CTkToplevel(app)
         check_modal.title("check")
         check_modal.geometry("600x200")
@@ -115,6 +140,7 @@ def main():
         password.bind("<Button-1>",lambda event: copy(password))
     show_start_frame()
     app.mainloop()
+
 
 #_____________________________________________________________________
 
