@@ -64,7 +64,7 @@ def main():
         change_theme = customtkinter.CTkButton(frame_vault, text=theme_chapter,
             font=("Arial", 60),anchor="center", width=50, height=50, text_color=("orange", "DarkGoldenrod"),
                 hover_color=app.cget("fg_color"), fg_color="transparent") # надо сделать с сохранение в файл
-        change_theme.place(x=920, y = 1)
+        change_theme.place(x=920, y = 3)
 
         def add_element(): # надо сделать, что бы таблица обновлялась после добавление нового элемента
             if add_link_entry.get() and add_login_entry and add_password_entry:
@@ -172,3 +172,4 @@ if __name__ == "__main__":
     #operations.delete_element(3)
     main()
     logics.db_close()
+
