@@ -14,7 +14,6 @@ def main():
     frame_vault = customtkinter.CTkFrame(app)
     elements_frame = customtkinter.CTkScrollableFrame(frame_vault, width=1000, height=900)
 #___________________________________________________________________
-    # баг, код выполняется весь сразу, когда надо что бы выполнялся сначала start  потом все остальное
     check_entry = customtkinter.CTkEntry(frame_start, placeholder_text="Enter Password",
                             width=500, height=50, font=("Verdana", 44), show="*" )
 
@@ -34,33 +33,36 @@ def main():
         generate_password_btn = customtkinter.CTkButton(frame_vault,
             text="generate\npassword", width=150, height=50, font=("Verdana", 30),
                                     fg_color="forestgreen", text_color="ivory" )
-        generate_password_btn.place(x=700, y=10)
+        generate_password_btn.place(x=600, y=10)
 
 
 
         index = 0
         row = 0
         for element in operations.show_elements():
-            index_label = customtkinter.CTkLabel(elements_frame, text=str(index), font= ("Verdana", 25), text_color="ivory")
+            index_label = customtkinter.CTkLabel(elements_frame, text=str(index), font= ("Verdana", 30), text_color=("black","ivory"))
             index_label.grid(row=row, column=0)
-            link_label = customtkinter.CTkLabel(elements_frame, text=element[0], font= ("Verdana", 25), text_color="ivory")
+            link_label_text = text=element[0]
+            if len(link_label_text) > 12:
+                link_label_text = link_label_text[:12] + "..."
+            link_label = customtkinter.CTkLabel(elements_frame, text=link_label_text, font= ("Verdana", 30), text_color=("black","ivory"))
             link_label.grid(row=row, column=1, padx=10, pady=10)
-            login_label = customtkinter.CTkLabel(elements_frame, text='*' * len(element[1]), font= ("Verdana", 25), text_color="ivory")
+            login_label = customtkinter.CTkLabel(elements_frame, text='*******' , font= ("Verdana", 30), text_color=("black","ivory"))
             login_label.grid(row=row, column=2, padx=10, pady=10)
-            password_label = customtkinter.CTkLabel(elements_frame, text='*' * len(element[2]), font= ("Verdana", 25), text_color="ivory" )
+            password_label = customtkinter.CTkLabel(elements_frame, text='*******' , font= ("Verdana", 30), text_color=("black","ivory") )
             password_label.grid(row=row, column=3, padx=10, pady=10)
 
             check_btn = customtkinter.CTkButton(elements_frame, text="check",
-                font=("Verdana", 30), width=75, height=40, text_color="ivory", fg_color="forestgreen" )
-            check_btn.grid(row=row, column=4, padx=10, pady=10)
+                font=("Verdana", 25), width=75, height=40, text_color="ivory", fg_color="orange", hover_color= "sienna")
+            check_btn.grid(row=row, column=4,  pady=10, padx=20, sticky="e")
 
             delete_btn = customtkinter.CTkButton(elements_frame, text="delete",
-                font=("Verdana", 30), width=75, height=40, text_color="ivory", fg_color="forestgreen" )
-            delete_btn.grid(row=row, column=5, padx=10, pady=10, sticky="w")
+                font=("Verdana", 25), width=75, height=40, text_color="ivory", fg_color="red", hover_color="dark red" )
+            delete_btn.grid(row=row, column=5,  pady=10, padx=20, sticky="e")
 
             update_btn = customtkinter.CTkButton(elements_frame, text="update",
-                font=("Verdana", 30), width=75, height=40, text_color="ivory", fg_color="forestgreen" )
-            update_btn.grid(row=row, column=6, padx=10, pady=10, sticky="w")
+                font=("Verdana", 25), width=75, height=40, text_color="ivory", fg_color="royal blue", hover_color ="slate blue" )
+            update_btn.grid(row=row, column=6,padx=20, pady=10, sticky="e")
             row += 1
             index += 1
 
@@ -95,6 +97,7 @@ def main():
 
 if __name__ == "__main__":
     #logics.start("password123")
-    #operations.create_element("amazon", "bez", "pas0202")
+    #operations.create_element("123456789123456789", "test", "test")
+    #operations.delete_element(3)
     main()
     logics.db_close()
