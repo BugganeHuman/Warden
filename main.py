@@ -115,7 +115,7 @@ def main():
 
         elements_frame.place(x=0, y=100)
 
-    def check_element(index):
+    def check_element(index): # эту функцию можно перенести в creat_vault_widgets()
 
         def copy(element):
             app.clipboard_clear()
