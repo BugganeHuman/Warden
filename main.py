@@ -14,6 +14,7 @@ def main():
     frame_vault = customtkinter.CTkFrame(app)
     elements_frame = customtkinter.CTkScrollableFrame(frame_vault, width=1000, height=900)
 #___________________________________________________________________
+    # баг, код выполняется весь сразу, когда надо что бы выполнялся сначала start  потом все остальное
     check_entry = customtkinter.CTkEntry(frame_start, placeholder_text="Enter Password",
                             width=500, height=50, font=("Verdana", 44), show="*" )
 
@@ -53,7 +54,8 @@ def main():
             password_label.grid(row=row, column=3, padx=10, pady=10)
 
             check_btn = customtkinter.CTkButton(elements_frame, text="check",
-                font=("Verdana", 25), width=75, height=40, text_color="ivory", fg_color="orange", hover_color= "sienna")
+                font=("Verdana", 25), width=75, height=40, text_color="ivory",
+                fg_color="orange", hover_color= "sienna", command=lambda : check_element(check_btn.grid_info()["row"]))
             check_btn.grid(row=row, column=4,  pady=10, padx=20, sticky="e")
 
             delete_btn = customtkinter.CTkButton(elements_frame, text="delete",
@@ -89,6 +91,18 @@ def main():
         frame_vault.pack(fill="both", expand=True)
 
         elements_frame.place(x=0, y=100)
+
+    def check_element(index):
+        check_modal = customtkinter.CTkToplevel(app)
+        check_modal.title("check")
+        check_modal.geometry("600x200")
+        check_modal.grab_set()
+        operations.show_element_secret_data(index)
+        example = customtkinter.CTkLabel(check_modal, text=index, font=("Verdana", 30))
+        example.grid_rowconfigure(0, weight=1)
+        example.grid_columnconfigure(0 , weight=1)
+        example.pack(expand=True)
+        example.pack(anchor="center")
 
     show_start_frame()
     app.mainloop()
