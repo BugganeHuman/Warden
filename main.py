@@ -6,7 +6,7 @@ def main():
     app = customtkinter.CTk()
     app.geometry("1000x800")
     app.title("Warden")
-    customtkinter.set_appearance_mode("system")
+    customtkinter.set_appearance_mode("dark")
     customtkinter.set_default_color_theme("green")
     app.resizable(False, False)
     frame_start = customtkinter.CTkFrame(app)
@@ -50,6 +50,22 @@ def main():
                 hover_color="dodger blue", command= lambda : add_element())
         add_btn.place(x = 575, y = 10)
 
+
+        find = customtkinter.CTkButton(frame_vault, text="🔍", font=("Verdana", 60),
+                width=50, height=50, fg_color="transparent", text_color= "SteelBlue",
+                    hover_color=app.cget("fg_color") ) # написать для этого функцию
+        find.place(x = 835, y = 0)
+
+        theme_chapter = ""
+        if customtkinter.get_appearance_mode().lower() == "dark":
+            theme_chapter = "🌙"
+        else:
+            theme_chapter = "🔆"
+        change_theme = customtkinter.CTkButton(frame_vault, text=theme_chapter,
+            font=("Arial", 60),anchor="center", width=50, height=50, text_color=("orange", "DarkGoldenrod"),
+                hover_color=app.cget("fg_color"), fg_color="transparent") # надо сделать с сохранение в файл
+        change_theme.place(x=920, y = 1)
+
         def add_element(): # надо сделать, что бы таблица обновлялась после добавление нового элемента
             if add_link_entry.get() and add_login_entry and add_password_entry:
                 operations.create_element(add_link_entry.get(),
@@ -58,6 +74,7 @@ def main():
                 add_login_entry.delete(0, "end")
                 add_password_entry.delete(0, "end")
                 show_elements()
+
 
         def show_elements():
             index = 0
@@ -91,6 +108,31 @@ def main():
 
 
 
+        def check_element(index):  # эту функцию можно перенести в creat_vault_widgets()
+            def copy(element):
+                app.clipboard_clear()
+                app.clipboard_append(element.cget("text"))
+                correct_text = element.cget("text")
+                element.configure(text="copied")
+                app.after(1000, lambda: element.configure(text=correct_text))
+                app.after(15000, lambda: (app.clipboard_clear(), app.clipboard_append("")))
+
+            check_modal = customtkinter.CTkToplevel(app)
+            check_modal.title("check")
+            check_modal.geometry("600x200")
+            check_modal.grab_set()
+            link = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[0],
+                                          font=("Verdana", 30))
+            link.bind("<Button-1>", lambda event: copy(link))
+            link.pack(pady=15)
+            login = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[1],
+                                           font=("Verdana", 30))
+            login.pack(pady=15)
+            login.bind("<Button-1>", lambda event: copy(login))
+            password = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[2],
+                                              font=("Verdana", 30))
+            password.pack(pady=15)
+            password.bind("<Button-1>", lambda event: copy(password))
 
         show_elements()
     #______________________________________________________________
@@ -117,29 +159,7 @@ def main():
 
         elements_frame.place(x=0, y=100)
 
-    def check_element(index): # эту функцию можно перенести в creat_vault_widgets()
 
-        def copy(element):
-            app.clipboard_clear()
-            app.clipboard_append(element.cget("text"))
-            correct_text = element.cget("text")
-            element.configure(text="copied")
-            app.after(1000, lambda : element.configure(text=correct_text))
-            app.after(15000, lambda : (app.clipboard_clear(),app.clipboard_append("")))
-
-        check_modal = customtkinter.CTkToplevel(app)
-        check_modal.title("check")
-        check_modal.geometry("600x200")
-        check_modal.grab_set()
-        link = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[0], font=("Verdana", 30))
-        link.bind("<Button-1>",lambda event: copy(link))
-        link.pack(pady=15)
-        login = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[1], font=("Verdana", 30))
-        login.pack(pady=15)
-        login.bind("<Button-1>",lambda event: copy(login))
-        password = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[2], font=("Verdana", 30))
-        password.pack(pady=15)
-        password.bind("<Button-1>",lambda event: copy(password))
     show_start_frame()
     app.mainloop()
 
