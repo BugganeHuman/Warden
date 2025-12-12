@@ -54,43 +54,43 @@ def main():
             if add_link_entry.get() and add_login_entry and add_password_entry:
                 operations.create_element(add_link_entry.get(),
                     add_login_entry.get(), add_password_entry.get())
+                add_link_entry.delete(0, "end")
+                add_login_entry.delete(0, "end")
+                add_password_entry.delete(0, "end")
+                show_elements()
 
-                show_vault_frame() # не то
+        def show_elements():
+            index = 0
+            row = 0
+            for element in operations.show_elements():
+                index_label = customtkinter.CTkLabel(elements_frame, text=str(index), font= ("Verdana", 30), text_color=("black","ivory"))
+                index_label.grid(row=row, column=0)
+                link_label_text = text=element[0]
+                if len(link_label_text) > 12:
+                    link_label_text = link_label_text[:12] + "..."
+                link_label = customtkinter.CTkLabel(elements_frame, text=link_label_text, font= ("Verdana", 30), text_color=("black","ivory"))
+                link_label.grid(row=row, column=1, padx=10, pady=10)
+                login_label = customtkinter.CTkLabel(elements_frame, text='*******' , font= ("Verdana", 30), text_color=("black","ivory"))
+                login_label.grid(row=row, column=2, padx=10, pady=10)
+                password_label = customtkinter.CTkLabel(elements_frame, text='*******' , font= ("Verdana", 30), text_color=("black","ivory") )
+                password_label.grid(row=row, column=3, padx=10, pady=10)
 
+                check_btn = customtkinter.CTkButton(elements_frame, text="check",
+                    font=("Verdana", 25), width=75, height=40, text_color="ivory",
+                    fg_color="orange", hover_color= "sienna")
+                check_btn.grid(row=row, column=4,  pady=10, padx=20, sticky="e")
+                check_btn.configure(command= lambda b=check_btn: check_element(b.grid_info()["row"]))
 
+                delete_btn = customtkinter.CTkButton(elements_frame, text="delete",
+                    font=("Verdana", 25), width=75, height=40, text_color="ivory", fg_color="red", hover_color="dark red" )
+                delete_btn.grid(row=row, column=5,  pady=10, padx=20, sticky="e")
 
-
-        index = 0
-        row = 0
-        for element in operations.show_elements():
-            index_label = customtkinter.CTkLabel(elements_frame, text=str(index), font= ("Verdana", 30), text_color=("black","ivory"))
-            index_label.grid(row=row, column=0)
-            link_label_text = text=element[0]
-            if len(link_label_text) > 12:
-                link_label_text = link_label_text[:12] + "..."
-            link_label = customtkinter.CTkLabel(elements_frame, text=link_label_text, font= ("Verdana", 30), text_color=("black","ivory"))
-            link_label.grid(row=row, column=1, padx=10, pady=10)
-            login_label = customtkinter.CTkLabel(elements_frame, text='*******' , font= ("Verdana", 30), text_color=("black","ivory"))
-            login_label.grid(row=row, column=2, padx=10, pady=10)
-            password_label = customtkinter.CTkLabel(elements_frame, text='*******' , font= ("Verdana", 30), text_color=("black","ivory") )
-            password_label.grid(row=row, column=3, padx=10, pady=10)
-
-            check_btn = customtkinter.CTkButton(elements_frame, text="check",
-                font=("Verdana", 25), width=75, height=40, text_color="ivory",
-                fg_color="orange", hover_color= "sienna")
-            check_btn.grid(row=row, column=4,  pady=10, padx=20, sticky="e")
-            check_btn.configure(command= lambda b=check_btn: check_element(b.grid_info()["row"]))
-
-            delete_btn = customtkinter.CTkButton(elements_frame, text="delete",
-                font=("Verdana", 25), width=75, height=40, text_color="ivory", fg_color="red", hover_color="dark red" )
-            delete_btn.grid(row=row, column=5,  pady=10, padx=20, sticky="e")
-
-            update_btn = customtkinter.CTkButton(elements_frame, text="update",
-                font=("Verdana", 25), width=75, height=40, text_color="ivory", fg_color="royal blue", hover_color ="slate blue" )
-            update_btn.grid(row=row, column=6,padx=20, pady=10, sticky="e")
-            row += 1
-            index += 1
-
+                update_btn = customtkinter.CTkButton(elements_frame, text="update",
+                    font=("Verdana", 25), width=75, height=40, text_color="ivory", fg_color="royal blue", hover_color ="slate blue" )
+                update_btn.grid(row=row, column=6,padx=20, pady=10, sticky="e")
+                row += 1
+                index += 1
+        show_elements()
     #______________________________________________________________
     def start(password):
         nonlocal check_label
