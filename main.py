@@ -39,7 +39,7 @@ def main():
     def creat_vault_widgets():
         generate_password_btn = customtkinter.CTkButton(frame_vault,
             text="generate\npassword", width=150, height=50, font=("Verdana", 30),
-                                    fg_color="forestgreen", text_color="ivory" )
+                fg_color="forestgreen", text_color="ivory", command= lambda : generate_password())
         generate_password_btn.place(x=670, y=10)
 
         add_link_entry = customtkinter.CTkEntry(frame_vault,
@@ -235,6 +235,31 @@ def main():
                         new_login_entry.get(),new_password_entry.get() )
                     show_elements()
                     modal_update.destroy()
+
+        def generate_password():
+            modal_gp = customtkinter.CTkToplevel(app)
+            modal_gp.geometry("500x600")
+            modal_gp.title("generate password")
+            modal_gp.grab_set()
+
+            label_amount = customtkinter.CTkLabel(modal_gp, text="amount chapters - ",
+                font=("Verdana", 30))
+            label_amount.pack(side = "left",pady = 10, padx = 35 )
+
+            amount_entry = customtkinter.CTkEntry(modal_gp, font=("Verdana", 40),
+                placeholder_text="...", width=130, height=50)
+            amount_entry.pack(side="right", pady = 10, padx = (0, 35))
+
+            lower_case_var = customtkinter.IntVar()
+            upper_case_var = customtkinter.IntVar()
+            numbers_var = customtkinter.IntVar()
+            special_symbols_var = customtkinter.IntVar()
+
+            lower_case_cb = customtkinter.CTkCheckBox(modal_gp, text="lower case (abc)", variable=lower_case_var)
+            lower_case_cb.pack(pady = 10)
+            upper_case_cb = customtkinter.CTkCheckBox(modal_gp, text="upper case (ABC)", variable=upper_case_var)
+            upper_case_cb.pack(pady = 10) # надо доделать
+
 
 
         show_elements()
