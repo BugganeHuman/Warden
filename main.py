@@ -6,7 +6,10 @@ def main():
     app = customtkinter.CTk()
     app.geometry("1000x800")
     app.title("Warden")
-    customtkinter.set_appearance_mode("dark")
+    theme = ""
+    with open("GUE_config.txt", 'r') as file:
+        theme = file.read()
+    customtkinter.set_appearance_mode(theme)
     customtkinter.set_default_color_theme("green")
     app.resizable(False, False)
     frame_start = customtkinter.CTkFrame(app)
@@ -58,13 +61,14 @@ def main():
 
         theme_chapter = ""
         if customtkinter.get_appearance_mode().lower() == "dark":
-            theme_chapter = "🌙"
-        else:
             theme_chapter = "🔆"
-        change_theme = customtkinter.CTkButton(frame_vault, text=theme_chapter,
-            font=("Arial", 60),anchor="center", width=50, height=50, text_color=("orange", "DarkGoldenrod"),
-                hover_color=app.cget("fg_color"), fg_color="transparent") # надо сделать с сохранение в файл
-        change_theme.place(x=920, y = 3)
+        else:
+            theme_chapter = "🌙"
+        change_theme_btn = customtkinter.CTkButton(frame_vault, text=theme_chapter,
+            font=("Arial", 60),anchor="center", width=50, height=50, text_color=("orange", "#BFC4CA"),
+                hover_color=app.cget("fg_color"), fg_color="transparent", command= lambda : change_theme()) # надо сделать с сохранение в файл
+        change_theme_btn.place(x=920, y = 5)
+
 
         def add_element(): # надо сделать, что бы таблица обновлялась после добавление нового элемента
             if add_link_entry.get() and add_login_entry and add_password_entry:
@@ -75,14 +79,25 @@ def main():
                 add_password_entry.delete(0, "end")
                 show_elements()
 
+        def change_theme():
+            if change_theme_btn.cget("text") == "🔆":
+                customtkinter.set_appearance_mode("light")
+                change_theme_btn.configure(text="🌙")
+                with open("GUE_config.txt", 'w+') as file:
+                    file.write("light")
+            elif change_theme_btn.cget("text") == "🌙":
+                customtkinter.set_appearance_mode("dark")
+                change_theme_btn.configure(text="🔆")
+                with open("GUE_config.txt", 'w+') as file:
+                    file.write("dark")
 
         def show_elements():
             index = 0
             row = 0
             for element in operations.show_elements():
                 link_label_text = text=element[0] #?
-                if len(link_label_text) > 12:
-                    link_label_text = link_label_text[:12] + "..."
+                if len(link_label_text) > 15:
+                    link_label_text = link_label_text[:15] + "..."
                 link_label = customtkinter.CTkLabel(elements_frame, text=link_label_text, font= ("Verdana", 30), text_color=("black","ivory"))
                 link_label.grid(row=row, column=1, padx=10, pady=10)
                 login_label = customtkinter.CTkLabel(elements_frame, text='*******' , font= ("Verdana", 30), text_color=("black","ivory"))
@@ -91,17 +106,17 @@ def main():
                 password_label.grid(row=row, column=3, padx=10, pady=10)
 
                 check_btn = customtkinter.CTkButton(elements_frame, text="check",
-                    font=("Verdana", 25), width=75, height=40, text_color="ivory",
+                    font=("Verdana", 20), width=75, height=30, text_color="ivory",
                     fg_color="orange", hover_color= "sienna")
                 check_btn.grid(row=row, column=4,  pady=10, padx=20)
                 check_btn.configure(command= lambda b=check_btn: check_element(b.grid_info()["row"]))
 
                 delete_btn = customtkinter.CTkButton(elements_frame, text="delete",
-                    font=("Verdana", 25), width=75, height=40, text_color="ivory", fg_color="red", hover_color="dark red" )
+                    font=("Verdana", 20), width=75, height=30, text_color="ivory", fg_color="red", hover_color="dark red" )
                 delete_btn.grid(row=row, column=5,  pady=10, padx=20 )
 
                 update_btn = customtkinter.CTkButton(elements_frame, text="update",
-                    font=("Verdana", 25), width=75, height=40, text_color="ivory", fg_color="royal blue", hover_color ="slate blue" )
+                    font=("Verdana", 20), width=75, height=30, text_color="ivory", fg_color="royal blue", hover_color ="slate blue" )
                 update_btn.grid(row=row, column=6,padx=20, pady=10 )
                 row += 1
                 index += 1
@@ -172,4 +187,3 @@ if __name__ == "__main__":
     #operations.delete_element(3)
     main()
     logics.db_close()
-
