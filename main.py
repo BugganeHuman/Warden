@@ -1,6 +1,9 @@
+from platform import android_ver
+
 import operations
 import logics
 import customtkinter
+
 
 def main():
     app = customtkinter.CTk()
@@ -67,12 +70,13 @@ def main():
         else:
             theme_chapter = "🌙"
         change_theme_btn = customtkinter.CTkButton(frame_vault, text=theme_chapter,
-            font=("Arial", 60),anchor="center", width=50, height=50, text_color=("#55606D", "#BFC4CA"),
-                hover_color=app.cget("fg_color"), fg_color="transparent", command= lambda : change_theme()) # надо сделать с сохранение в файл
+            font=("Arial", 60),anchor="center", width=50, height=50,
+                text_color=("#55606D", "#BFC4CA"), hover_color=app.cget("fg_color"),
+                    fg_color="transparent", command= lambda : change_theme())
         change_theme_btn.place(x=920, y = 5)
 
 
-        def add_element(): # надо сделать, что бы таблица обновлялась после добавление нового элемента
+        def add_element():
             if add_link_entry.get() and add_login_entry and add_password_entry:
                 operations.create_element(add_link_entry.get(),
                     add_login_entry.get(), add_password_entry.get())
@@ -120,16 +124,23 @@ def main():
                     font=("Verdana", 20), width=75, height=30, text_color="ivory",
                     fg_color="orange", hover_color= "sienna")
                 check_btn.grid(row=row, column=4,  pady=10, padx=20)
-                check_btn.configure(command= lambda b=check_btn: check_element(b.grid_info()["row"]))
+                check_btn.configure(command= lambda b=check_btn:
+                    check_element(b.grid_info()["row"]))
 
                 delete_btn = customtkinter.CTkButton(elements_frame, text="delete",
-                    font=("Verdana", 20), width=75, height=30, text_color="ivory", fg_color="red", hover_color="dark red" )
+                    font=("Verdana", 20), width=75, height=30, text_color="ivory",
+                        fg_color="red", hover_color="dark red" )
                 delete_btn.grid(row=row, column=5,  pady=10, padx=20 )
-                delete_btn.configure(command= lambda b=delete_btn: delete_element(b.grid_info()["row"]))
+                delete_btn.configure(command= lambda b=delete_btn:
+                    delete_element(b.grid_info()["row"]))
 
                 update_btn = customtkinter.CTkButton(elements_frame, text="update",
-                    font=("Verdana", 20), width=75, height=30, text_color="ivory", fg_color="royal blue", hover_color ="slate blue" )
+                    font=("Verdana", 20), width=75, height=30, text_color="ivory",
+                        fg_color="royal blue", hover_color ="slate blue" )
                 update_btn.grid(row=row, column=6,padx=20, pady=10 )
+                update_btn.configure(command= lambda b=update_btn:
+                    update_element(b.grid_info()["row"]))
+
                 row += 1
 
 
@@ -140,22 +151,26 @@ def main():
                 correct_text = element.cget("text")
                 element.configure(text="copied")
                 app.after(1000, lambda: element.configure(text=correct_text))
-                app.after(15000, lambda: (app.clipboard_clear(), app.clipboard_append("")))
+                app.after(15000, lambda: (app.clipboard_clear(),
+                                app.clipboard_append("")))
 
             check_modal = customtkinter.CTkToplevel(app)
             check_modal.title("check")
             check_modal.geometry("600x200")
             check_modal.grab_set()
-            link = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[0],
-                                          font=("Verdana", 30))
+            link = customtkinter.CTkLabel(check_modal,
+                text=operations.show_element_secret_data(index)[0],
+                    font=("Verdana", 30))
             link.bind("<Button-1>", lambda event: copy(link))
             link.pack(pady=15)
-            login = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[1],
-                                           font=("Verdana", 30))
+            login = customtkinter.CTkLabel(check_modal,
+                text=operations.show_element_secret_data(index)[1],
+                    font=("Verdana", 30))
             login.pack(pady=15)
             login.bind("<Button-1>", lambda event: copy(login))
-            password = customtkinter.CTkLabel(check_modal, text=operations.show_element_secret_data(index)[2],
-                                              font=("Verdana", 30))
+            password = customtkinter.CTkLabel(check_modal,
+                text=operations.show_element_secret_data(index)[2],
+                    font=("Verdana", 30))
             password.pack(pady=15)
             password.bind("<Button-1>", lambda event: copy(password))
 
@@ -185,6 +200,42 @@ def main():
                     command=delete_modal.destroy)
             no_btn.pack(side = "left", padx = (20, 0))
 
+        def update_element(index):
+            modal_update = customtkinter.CTkToplevel(app)
+            modal_update.geometry("500x400")
+            modal_update.title("update")
+            modal_update.grab_set()
+
+            new_link_entry = customtkinter.CTkEntry(modal_update,
+                placeholder_text="write new link", font=("Verdana", 40), width=450,
+                    height=50)
+            new_link_entry.pack(anchor="center", pady=10)
+
+            new_login_entry = customtkinter.CTkEntry(modal_update,
+                placeholder_text="write new login", font=("Verdana", 40), width=450,
+                    height=50)
+            new_login_entry.pack(anchor="center", pady=10)
+
+            new_password_entry = customtkinter.CTkEntry(modal_update,
+                placeholder_text="write new password", font=("Verdana", 40), width=450,
+                    height=50)
+            new_password_entry.pack(anchor="center", pady=10)
+
+            btn_update = customtkinter.CTkButton(modal_update, text="UPDATE",
+                font=("Verdana", 40), width=160, height=60, fg_color="#28A745",
+                    command=lambda : update())
+            btn_update.pack(anchor="center", pady=30)
+
+            def update():
+                if (new_link_entry.get() != "" and
+                    new_login_entry.get() != "" and
+                    new_password_entry.get() != ""
+                    ):
+                    operations.update_element(index, new_link_entry.get(),
+                        new_login_entry.get(),new_password_entry.get() )
+                    show_elements()
+                    modal_update.destroy()
+
 
         show_elements()
     #______________________________________________________________
@@ -199,11 +250,8 @@ def main():
         else:
             check_label.configure(text="Incorrect password")
 
-    def show_start_frame(): # можно добавить функцию просмотра пароля,
-                    # пока нажата кнопка, а когда отпукаешь все блюрется
+    def show_start_frame():
         frame_start.pack(fill="both", expand=True)
-        # так же можно добавить функцию смены темы
-
 
     def show_vault_frame(): # надо будет заполнить его
         frame_start.pack_forget()
@@ -219,8 +267,5 @@ def main():
 #_____________________________________________________________________
 
 if __name__ == "__main__":
-    #logics.start("password123")
-    #operations.create_element("123456789123456789", "test", "test")
-    #operations.delete_element(3)
     main()
     logics.db_close()
