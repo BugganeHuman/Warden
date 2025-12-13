@@ -9,6 +9,8 @@ def main():
     theme = ""
     with open("GUE_config.txt", 'r') as file:
         theme = file.read()
+        if len(theme) < 3:
+            theme = "dark"
     customtkinter.set_appearance_mode(theme)
     customtkinter.set_default_color_theme("green")
     app.resizable(False, False)
@@ -65,7 +67,7 @@ def main():
         else:
             theme_chapter = "🌙"
         change_theme_btn = customtkinter.CTkButton(frame_vault, text=theme_chapter,
-            font=("Arial", 60),anchor="center", width=50, height=50, text_color=("orange", "#BFC4CA"),
+            font=("Arial", 60),anchor="center", width=50, height=50, text_color=("#55606D", "#BFC4CA"),
                 hover_color=app.cget("fg_color"), fg_color="transparent", command= lambda : change_theme()) # надо сделать с сохранение в файл
         change_theme_btn.place(x=920, y = 5)
 
@@ -92,17 +94,26 @@ def main():
                     file.write("dark")
 
         def show_elements():
-            index = 0
+            for widget in elements_frame.winfo_children():
+                widget.destroy()
             row = 0
             for element in operations.show_elements():
-                link_label_text = text=element[0] #?
+                link_label_text = element[0]
                 if len(link_label_text) > 15:
                     link_label_text = link_label_text[:15] + "..."
-                link_label = customtkinter.CTkLabel(elements_frame, text=link_label_text, font= ("Verdana", 30), text_color=("black","ivory"))
+                link_label = customtkinter.CTkLabel(elements_frame,
+                    text=link_label_text, font= ("Verdana", 30),
+                        text_color=("black","ivory"))
                 link_label.grid(row=row, column=1, padx=10, pady=10)
-                login_label = customtkinter.CTkLabel(elements_frame, text='*******' , font= ("Verdana", 30), text_color=("black","ivory"))
+
+                login_label = customtkinter.CTkLabel(elements_frame,
+                    text='*******' , font= ("Verdana", 30),
+                        text_color=("black","ivory"))
                 login_label.grid(row=row, column=2, padx=10, pady=10)
-                password_label = customtkinter.CTkLabel(elements_frame, text='*******' , font= ("Verdana", 30), text_color=("black","ivory") )
+
+                password_label = customtkinter.CTkLabel(elements_frame,
+                    text='*******' , font= ("Verdana", 30),
+                        text_color=("black","ivory") )
                 password_label.grid(row=row, column=3, padx=10, pady=10)
 
                 check_btn = customtkinter.CTkButton(elements_frame, text="check",
@@ -114,16 +125,15 @@ def main():
                 delete_btn = customtkinter.CTkButton(elements_frame, text="delete",
                     font=("Verdana", 20), width=75, height=30, text_color="ivory", fg_color="red", hover_color="dark red" )
                 delete_btn.grid(row=row, column=5,  pady=10, padx=20 )
+                delete_btn.configure(command= lambda b=delete_btn: delete_element(b.grid_info()["row"]))
 
                 update_btn = customtkinter.CTkButton(elements_frame, text="update",
                     font=("Verdana", 20), width=75, height=30, text_color="ivory", fg_color="royal blue", hover_color ="slate blue" )
                 update_btn.grid(row=row, column=6,padx=20, pady=10 )
                 row += 1
-                index += 1
 
 
-
-        def check_element(index):  # эту функцию можно перенести в creat_vault_widgets()
+        def check_element(index):
             def copy(element):
                 app.clipboard_clear()
                 app.clipboard_append(element.cget("text"))
@@ -148,6 +158,33 @@ def main():
                                               font=("Verdana", 30))
             password.pack(pady=15)
             password.bind("<Button-1>", lambda event: copy(password))
+
+        def delete_element(index):
+
+            delete_modal = customtkinter.CTkToplevel(app)
+            delete_modal.title("deleting")
+            delete_modal.geometry("400x200")
+            delete_modal.grab_set()
+
+            def delete():
+                operations.delete_element(index)
+                show_elements()
+                delete_modal.destroy()
+
+            label = customtkinter.CTkLabel(delete_modal, text="Are you sure?",
+                font=("Verdana", 40) )
+            label.pack(anchor="center", pady=10)
+
+            yes_btn = customtkinter.CTkButton(delete_modal, text="YES",
+                font=("Verdana", 40), width=40, height=40,fg_color="lime green",
+                    command= delete)
+            yes_btn.pack(side="right", padx=(0, 20))
+
+            no_btn = customtkinter.CTkButton(delete_modal, text="NO",
+                font=("Verdana", 40), width=40, height=40, fg_color="red",
+                    command=delete_modal.destroy)
+            no_btn.pack(side = "left", padx = (20, 0))
+
 
         show_elements()
     #______________________________________________________________
