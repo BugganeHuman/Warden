@@ -8,10 +8,16 @@ def main():
     app.geometry("1000x800")
     app.title("Warden")
     theme = ""
-    with open("GUE_config.txt", 'r') as file:
-        theme = file.read()
-        if len(theme) < 3:
-            theme = "dark"
+    try:
+        with open("GUE_config.txt", 'r') as file:
+            theme = file.read()
+            if len(theme) < 3:
+                theme = "dark"
+    except Exception as e:
+        with open("GUE_config.txt", 'w+') as file:
+            file.write("light")
+        theme = "light"
+
     customtkinter.set_appearance_mode(theme)
     customtkinter.set_default_color_theme("green")
     app.resizable(False, False)
@@ -358,13 +364,14 @@ def main():
             search_entry = customtkinter.CTkEntry(modal_search, width=500,
                 placeholder_text="write searching", height=70, font= ("Verdana", 35))
             search_entry.place(y = 10, x = 60)
+            search_entry.bind("<Return>", lambda event: find_element())
 
             search_btn = customtkinter.CTkButton(modal_search, text="🔍",
                 font=("Arial", 60), width=50, height=50, fg_color="transparent",
                     text_color= "SteelBlue", hover_color = "#5CACEE",
                         command= lambda : find_element())
-
             search_btn.place(y = 10, x = 570)
+
             frame_find_elements = customtkinter.CTkScrollableFrame(modal_search,
                 width=700, height=500)
             frame_find_elements.place(y = 100, x = 0)
