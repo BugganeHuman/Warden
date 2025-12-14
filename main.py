@@ -1,5 +1,3 @@
-from platform import android_ver
-
 import operations
 import logics
 import customtkinter
@@ -238,29 +236,65 @@ def main():
 
         def generate_password():
             modal_gp = customtkinter.CTkToplevel(app)
-            modal_gp.geometry("500x600")
+            modal_gp.geometry("600x600")
             modal_gp.title("generate password")
             modal_gp.grab_set()
+            modal_gp.resizable(True, False)
 
             label_amount = customtkinter.CTkLabel(modal_gp, text="amount chapters - ",
                 font=("Verdana", 30))
-            label_amount.pack(side = "left",pady = 10, padx = 35 )
+            label_amount.place(x=60, y=15)
 
             amount_entry = customtkinter.CTkEntry(modal_gp, font=("Verdana", 40),
                 placeholder_text="...", width=130, height=50)
-            amount_entry.pack(side="right", pady = 10, padx = (0, 35))
+            amount_entry.place(x = 390, y = 10)
 
-            lower_case_var = customtkinter.IntVar()
-            upper_case_var = customtkinter.IntVar()
-            numbers_var = customtkinter.IntVar()
-            special_symbols_var = customtkinter.IntVar()
+            lower_case_var = customtkinter.BooleanVar()
+            upper_case_var = customtkinter.BooleanVar()
+            numbers_var = customtkinter.BooleanVar()
+            special_symbols_var = customtkinter.BooleanVar()
 
-            lower_case_cb = customtkinter.CTkCheckBox(modal_gp, text="lower case (abc)", variable=lower_case_var)
-            lower_case_cb.pack(pady = 10)
-            upper_case_cb = customtkinter.CTkCheckBox(modal_gp, text="upper case (ABC)", variable=upper_case_var)
-            upper_case_cb.pack(pady = 10) # надо доделать
+            lower_case_cb = customtkinter.CTkCheckBox(modal_gp, font=("Verdana", 20),
+                text="lower case (abc)", variable=lower_case_var,
+                    fg_color= "forestgreen")
+            lower_case_cb.place(x = 50, y = 90)
 
+            upper_case_cb = customtkinter.CTkCheckBox(modal_gp, font=("Verdana", 20),
+                text="upper case (ABC)", variable=upper_case_var,
+                    fg_color= "forestgreen")
+            upper_case_cb.place(x = 290, y = 90)
 
+            numbers_cb = customtkinter.CTkCheckBox(modal_gp, font=("Verdana", 20),
+                text="numbers (123)", variable=numbers_var, fg_color= "forestgreen")
+            numbers_cb.place(x = 50, y = 150)
+
+            special_symbols_cb = customtkinter.CTkCheckBox(modal_gp, font=("Verdana", 20),
+                text = "special symbols (!?@$)", variable=special_symbols_var,
+                    fg_color= "forestgreen")
+            special_symbols_cb.place(x = 290, y = 150)
+
+            generate_btn = customtkinter.CTkButton(modal_gp, text="GENERATE",
+                fg_color= "forestgreen", font=("Verdana", 30), width=150,
+                    height=60, command= lambda : generate())
+            generate_btn.place(y = 230, x = 200)
+            frame_passwords = customtkinter.CTkFrame(modal_gp,width=2000, height=300)
+            frame_passwords.place(x=0, y = 300)
+
+            def generate():
+                if (amount_entry.get().isdigit() and lower_case_var.get() or
+                    numbers_var.get() or upper_case_var.get() or
+                    special_symbols_var.get()):
+                    passwords = logics.generate_password(int(amount_entry.get()),
+                        lower_case_var.get(), upper_case_var.get(), numbers_var.get(),
+                            special_symbols_var.get())
+                    for widget in frame_passwords.winfo_children():
+                        widget.destroy()
+                    y = 5
+                    for password in passwords:
+                        password = customtkinter.CTkLabel(frame_passwords, text=password,
+                            font=("Verdana", 30))
+                        password.place(x = 10, y = y)
+                        y += 55
 
         show_elements()
     #______________________________________________________________
