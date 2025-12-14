@@ -29,12 +29,18 @@ def main():
             placeholder_text="write new password", font=("Verdana", 40),
                 show="*", width=500, height=50)
         password_entry_first.place(x = 230, y = 280)
+        password_entry_first.bind("<Control-v>", "break")
+        password_entry_first.bind("<Command-v>", "break")
+        password_entry_first.bind("<Button-3>", "break")
 
         password_entry_second = customtkinter.CTkEntry(frame_start,
             placeholder_text="write password again", font=("Verdana", 40),
                 show="*", width=500, height=50)
         password_entry_second.place(x=230, y=350)
         password_entry_second.bind("<Return>", lambda event: registration())
+        password_entry_second.bind("<Control-v>", "break")
+        password_entry_second.bind("<Command-v>", "break")
+        password_entry_second.bind("<Button-3>", "break")
 
         signup_btn = customtkinter.CTkButton(frame_start, text="sign up",
             font=("Verdana", 35 ), height= 60, width=60, fg_color="forest green",
@@ -61,6 +67,9 @@ def main():
         check_label = customtkinter.CTkLabel(frame_start, text="", width=300,
             height=50, font=("Verdana", 44))
         check_entry.bind("<Return>", lambda event : log_in())
+        check_entry.bind("<Control-v>", "break")
+        check_entry.bind("<Command-v>", "break")
+        check_entry.bind("<Button-3>", "break")
         check_entry.place(x=220, y=350)
         check_btn_start.place(x=730, y=352)
         check_label.place(x=270, y=420)
@@ -91,6 +100,8 @@ def main():
         add_password_entry = customtkinter.CTkEntry(frame_vault,
             placeholder_text="new pass", width=180, height=80, font=("Verdana", 25))
         add_password_entry.place(x = 385, y = 10)
+        add_password_entry.bind("<Return>", lambda event : add_element())
+
         add_btn = customtkinter.CTkButton(frame_vault, text="ADD", width=80,
             height=80,font=("Verdana", 30), fg_color="medium slate blue",
                 hover_color="dodger blue", command= lambda : add_element())
