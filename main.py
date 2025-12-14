@@ -141,16 +141,16 @@ def main():
 
                 row += 1
 
+        def copy(element):
+            app.clipboard_clear()
+            app.clipboard_append(element.cget("text"))
+            correct_text = element.cget("text")
+            element.configure(text="copied")
+            app.after(1000, lambda: element.configure(text=correct_text))
+            app.after(15000, lambda: (app.clipboard_clear(),
+                            app.clipboard_append("")))
 
         def check_element(index):
-            def copy(element):
-                app.clipboard_clear()
-                app.clipboard_append(element.cget("text"))
-                correct_text = element.cget("text")
-                element.configure(text="copied")
-                app.after(1000, lambda: element.configure(text=correct_text))
-                app.after(15000, lambda: (app.clipboard_clear(),
-                                app.clipboard_append("")))
 
             check_modal = customtkinter.CTkToplevel(app)
             check_modal.title("check")
@@ -293,6 +293,7 @@ def main():
                     for password in passwords:
                         password = customtkinter.CTkLabel(frame_passwords, text=password,
                             font=("Verdana", 30))
+                        password.bind("<Button-1>", lambda event, pas=password: copy(pas))
                         password.place(x = 10, y = y)
                         y += 55
 
