@@ -7,6 +7,7 @@ def main():
     app = customtkinter.CTk()
     app.geometry("1000x800")
     app.title("Warden")
+    app.iconbitmap("icon.ico")
     theme = ""
     try:
         with open("GUE_config.txt", 'r') as file:
@@ -54,6 +55,8 @@ def main():
         signup_btn.place(x = 410, y=430)
 
         def registration():
+            if len(password_entry_first.get()) < 10:
+                welcome_label.configure(text="minimal length 10", text_color="red")
             if password_entry_first.get() == password_entry_second.get():
                 start(password_entry_second.get())
             else:
