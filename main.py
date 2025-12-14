@@ -59,7 +59,7 @@ def main():
 
         find = customtkinter.CTkButton(frame_vault, text="🔍", font=("Verdana", 60),
                 width=50, height=50, fg_color="transparent", text_color= "SteelBlue",
-                    hover_color=app.cget("fg_color") ) # написать для этого функцию
+                    hover_color=app.cget("fg_color"), command=lambda : search())
         find.place(x = 835, y = 0)
 
         theme_chapter = ""
@@ -296,6 +296,47 @@ def main():
                         password.bind("<Button-1>", lambda event, pas=password: copy(pas))
                         password.place(x = 10, y = y)
                         y += 55
+
+        def search():
+            modal_search = customtkinter.CTkToplevel(app)
+            modal_search.geometry("700x600")
+            modal_search.title("search")
+            modal_search.grab_set()
+
+            search_entry = customtkinter.CTkEntry(modal_search, width=500,
+                placeholder_text="write searching", height=70, font= ("Verdana", 35))
+            search_entry.place(y = 10, x = 60)
+
+            search_btn = customtkinter.CTkButton(modal_search, text="🔍",
+                font=("Arial", 60), width=50, height=50, fg_color="transparent",
+                    text_color= "SteelBlue", hover_color = "#5CACEE",
+                        command= lambda : find_element())
+
+            search_btn.place(y = 10, x = 570)
+            frame_find_elements = customtkinter.CTkScrollableFrame(modal_search, width=700, height=500)
+            frame_find_elements.place(y = 100, x = 0)
+
+            def find_element():
+                find_elements = operations.find_element(search_entry.get())
+                for widget in frame_find_elements.winfo_children():
+                    widget.destroy()
+                row = 0
+                for element in find_elements:
+                    find_element_label_text = element[0]
+                    if len(find_element_label_text) > 15:
+                        find_element_label_text = find_element_label_text[:15] + "..."
+                    find_element_label = customtkinter.CTkLabel(frame_find_elements,
+                        text=find_element_label_text, font=("Verdana", 40), )
+                    find_element_label.grid(row = row, column = 0, pady=10, padx=30)
+
+                    find_element_check_btn = customtkinter.CTkButton(frame_find_elements,
+                        text="check", font=("Verdana", 20), width=75, height=30,
+                            text_color="ivory", fg_color="orange", hover_color="sienna")
+                    find_element_check_btn.grid(row = row, column = 1, pady=10, padx=30)
+                    find_element_check_btn.configure(command= lambda b=element:
+                        check_element(b[3]))
+
+                    row += 1
 
         show_elements()
     #______________________________________________________________
