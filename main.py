@@ -293,7 +293,8 @@ def main():
                     for password in passwords:
                         password = customtkinter.CTkLabel(frame_passwords, text=password,
                             font=("Verdana", 30))
-                        password.bind("<Button-1>", lambda event, pas=password: copy(pas))
+                        password.bind("<Button-1>", lambda event,
+                            pas=password: copy(pas))
                         password.place(x = 10, y = y)
                         y += 55
 
@@ -313,7 +314,8 @@ def main():
                         command= lambda : find_element())
 
             search_btn.place(y = 10, x = 570)
-            frame_find_elements = customtkinter.CTkScrollableFrame(modal_search, width=700, height=500)
+            frame_find_elements = customtkinter.CTkScrollableFrame(modal_search,
+                width=700, height=500)
             frame_find_elements.place(y = 100, x = 0)
 
             def find_element():
