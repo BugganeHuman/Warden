@@ -19,19 +19,59 @@ def main():
     frame_vault = customtkinter.CTkFrame(app)
     elements_frame = customtkinter.CTkScrollableFrame(frame_vault, width=1000, height=688)
 #___________________________________________________________________
+    if not logics.salt_exists():
 
-    check_entry = customtkinter.CTkEntry(frame_start, placeholder_text="Enter Password",
-                            width=500, height=50, font=("Verdana", 44), show="*" )
+        welcome_label = customtkinter.CTkLabel(frame_start,
+            text="Welcome to Warden", font=("Verdana", 45))
+        welcome_label.place(y = 200, x = 250)
 
-    check_btn_start = customtkinter.CTkButton(frame_start,text="Enter",command=lambda :
-        start(check_entry.get()), width=50, height=50, font=("Verdana", 34))
+        password_entry_first = customtkinter.CTkEntry(frame_start,
+            placeholder_text="write new password", font=("Verdana", 40),
+                show="*", width=500, height=50)
+        password_entry_first.place(x = 230, y = 280)
 
-    check_label = customtkinter.CTkLabel(frame_start, text="", width=300,
-                    height=50, font=("Verdana", 44))
-    check_entry.bind("<Return>", lambda event : start(check_entry.get()))
-    check_entry.place(x=220, y=350)
-    check_btn_start.place(x=730, y=352)
-    check_label.place(x=270, y=420)
+        password_entry_second = customtkinter.CTkEntry(frame_start,
+            placeholder_text="write password again", font=("Verdana", 40),
+                show="*", width=500, height=50)
+        password_entry_second.place(x=230, y=350)
+        password_entry_second.bind("<Return>", lambda event: registration())
+
+        signup_btn = customtkinter.CTkButton(frame_start, text="sign up",
+            font=("Verdana", 35 ), height= 60, width=60, fg_color="forest green",
+                command= lambda: registration())
+        signup_btn.place(x = 410, y=430)
+
+        def registration():
+            if password_entry_first.get() == password_entry_second.get():
+                start(password_entry_second.get())
+            else:
+                welcome_label.configure(text="the passwords don't match", text_color="red")
+                password_entry_first.delete(0, "end")
+                password_entry_second.delete(0, "end")
+
+    else:
+        check_entry = customtkinter.CTkEntry(frame_start,
+            placeholder_text="Enter Password", width=500, height=50,
+                font=("Verdana", 44), show="*" )
+
+        check_btn_start = customtkinter.CTkButton(frame_start,text="Enter",command=lambda :
+            log_in(), width=50, height=50, font=("Verdana", 34),
+                fg_color="forest green")
+
+        check_label = customtkinter.CTkLabel(frame_start, text="", width=300,
+            height=50, font=("Verdana", 44))
+        check_entry.bind("<Return>", lambda event : log_in())
+        check_entry.place(x=220, y=350)
+        check_btn_start.place(x=730, y=352)
+        check_label.place(x=270, y=420)
+
+        def log_in():
+            if start(check_entry.get()):
+                check_label.configure(text="Enter permitted")
+            else:
+                check_label.configure(text="Incorrect password")
+            check_entry.delete(0, "end")
+
 
     #______________________________________________________________
     def creat_vault_widgets():
@@ -343,20 +383,16 @@ def main():
         show_elements()
     #______________________________________________________________
     def start(password):
-        nonlocal check_label
-        nonlocal check_entry
-        check_entry.delete(0, "end")
         if logics.start(password):
-            check_label.configure(text="Enter permitted")
             show_vault_frame()
             creat_vault_widgets()
-        else:
-            check_label.configure(text="Incorrect password")
+
+
 
     def show_start_frame():
         frame_start.pack(fill="both", expand=True)
 
-    def show_vault_frame(): # надо будет заполнить его
+    def show_vault_frame():
         frame_start.pack_forget()
         frame_vault.pack(fill="both", expand=True)
 
