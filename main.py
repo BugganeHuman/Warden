@@ -1,20 +1,21 @@
 import operations
 import logics
 import customtkinter
-
+from pathlib import Path
 
 def main():
     app = customtkinter.CTk()
     app.geometry("1000x800")
     app.title("Warden")
-    app.iconbitmap("icon.ico")
+    if Path("icon.ico").exists():
+        app.iconbitmap("icon.ico")
     theme = ""
     try:
         with open("GUE_config.txt", 'r') as file:
             theme = file.read()
             if len(theme) < 3:
                 theme = "dark"
-    except Exception as e:
+    except Exception as error:
         with open("GUE_config.txt", 'w+') as file:
             file.write("light")
         theme = "light"
@@ -57,12 +58,21 @@ def main():
         def registration():
             if len(password_entry_first.get()) < 10:
                 welcome_label.configure(text="minimal length 10", text_color="red")
+                password_entry_first.delete(0, "end")
+                password_entry_second.delete(0, "end" )
+                password_entry_first.configure(show="*")
+                password_entry_second.configure(show="*")
             if password_entry_first.get() == password_entry_second.get():
-                start(password_entry_second.get())
+                try:
+                    start(password_entry_second.get())
+                except Exception as e:
+                    make_error(e)
             else:
                 welcome_label.configure(text="the passwords don't match", text_color="red")
                 password_entry_first.delete(0, "end")
-                password_entry_second.delete(0, "end")
+                password_entry_second.delete(0, "end" )
+                password_entry_first.configure(show="*")
+                password_entry_second.configure(show="*")
 
     else:
         check_entry = customtkinter.CTkEntry(frame_start,
@@ -84,11 +94,14 @@ def main():
         check_label.place(x=270, y=420)
 
         def log_in():
-            if start(check_entry.get()):
-                check_label.configure(text="Enter permitted")
-            else:
-                check_label.configure(text="Incorrect password")
-            check_entry.delete(0, "end")
+            try:
+                if start(check_entry.get()):
+                    check_label.configure(text="Enter permitted")
+                else:
+                    check_label.configure(text="Incorrect password")
+                check_entry.delete(0, "end")
+            except Exception as e:
+                make_error(e)
 
 
     #______________________________________________________________
@@ -380,7 +393,12 @@ def main():
             frame_find_elements.place(y = 100, x = 0)
 
             def find_element():
-                find_elements = operations.find_element(search_entry.get())
+                find_elements = []
+                try:
+                    find_elements = operations.find_element(search_entry.get())
+                except Exception as e:
+                    make_error(e)
+
                 for widget in frame_find_elements.winfo_children():
                     widget.destroy()
                 row = 0
@@ -400,24 +418,40 @@ def main():
                         check_element(b[3]))
 
                     row += 1
-
-        show_elements()
+        try:
+            show_elements()
+        except Exception as er:
+            make_error(er)
     #______________________________________________________________
     def start(password):
         if logics.start(password):
             show_vault_frame()
             creat_vault_widgets()
 
-
-
     def show_start_frame():
-        frame_start.pack(fill="both", expand=True)
+        try:
+            frame_start.pack(fill="both", expand=True)
+        except Exception as e:
+            make_error(e)
 
     def show_vault_frame():
-        frame_start.pack_forget()
-        frame_vault.pack(fill="both", expand=True)
+        try:
+            frame_start.pack_forget()
+            frame_vault.pack(fill="both", expand=True)
+            elements_frame.place(x=0, y=100)
+        except Exception as e:
+            make_error(e)
 
-        elements_frame.place(x=0, y=100)
+    def make_error(error):
+        modal_error = customtkinter.CTkToplevel(app)
+        modal_error.geometry("300x150")
+        modal_error.title("error")
+        label = customtkinter.CTkLabel(modal_error, text="ERROR",
+            font=("Verdana", 30))
+        label.pack(side="top", anchor="center")
+        label_error = customtkinter.CTkLabel(modal_error, text=error,
+            font=("Verdana", 25))
+        label_error.pack( pady = 70)
 
 
     show_start_frame()
