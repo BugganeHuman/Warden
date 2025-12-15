@@ -48,4 +48,14 @@ This is a password manager - it is necessary for encryption and access to your p
   Before actual use, make sure that your device is free of keyloggers or other viruses.
 
   When you enter your master password, make sure no one is spying on your hands.
-  
+
+## Changing the Master Password
+
+  The app does not support changing the master password in-place.
+
+  If you need to change the master password:
+  1. Download the app to a different location.
+  2. Manually migrate records from the old database through the app.
+  3. Test the new database.
+  4. Securely delete the old one.
+
