@@ -1,6 +1,6 @@
                           Warden 
 
-This is a password manager - you need it to store all your passwords in one place.
+This is a password manager - it is necessary for encryption and access to your passwords.
 
 ## Tech Stack
 - python 3.14
@@ -11,7 +11,7 @@ This is a password manager - you need it to store all your passwords in one plac
 ## Installation
   git clone https://github.com/BugganeHuman/Warden
   To ensure proper operation, place the .exe file along with the icon.png,
-  or build it yourself using pyinstaller.
+  or build it yourself using pyinstaller -
   pyinstaller --onefile --windowed --icon=icon.ico main.py command
 
 ## Project Structure
@@ -25,6 +25,15 @@ This is a password manager - you need it to store all your passwords in one plac
   your needs (which you can't do with large-scale password managers because 
   it's long and complicated), meaning if you have special preferences like
   5,000,000 iterations or special checks.
+
+  Fully local storage (no cloud)
+
+  UI can be adjusted without touching cryptographic logic
+
+  Codebase is small and readable
+
+  Security parameters are explicit and configurable
+  
 
 ## Recommendations For Use
   Be sure to make backups
