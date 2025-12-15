@@ -1,2 +1,42 @@
-Warden passwords-manager
-python 14
+                          Warden 
+
+This is a password manager - you need it to store all your passwords in one place.
+
+## Tech Stack
+- python 3.14
+- cryptography
+- sqlite
+- customykinter
+
+## Installation
+  git clone https://github.com/BugganeHuman/Warden
+  To ensure proper operation, place the .exe file along with the icon.png,
+  or build it yourself using pyinstaller.
+  pyinstaller --onefile --windowed --icon=icon.ico main.py command
+
+## Project Structure
+  logics.py - functions related to the project logic are stored
+  operations.py - functions associated with elements are stored
+  main.py - the interface is stored
+
+## Features
+  This is a password manager that is easy to understand but highly secure,
+  meaning you can literally read the written code and rewrite it to suit
+  your needs (which you can't do with large-scale password managers because 
+  it's long and complicated), meaning if you have special preferences like
+  5,000,000 iterations or special checks.
+
+## Recommendations For Use
+  Be sure to make backups
+  because even if an attacker can't decrypt the database with passwords,
+  he can simply delete it
+
+  Do not store your master password anywhere.
+
+  Do not manually change the database file,
+  as this may break the entire structure and you will lose access.
+
+  Before actual use, make sure that your device is free of keyloggers or other viruses.
+
+  When you enter your master password, make sure no one is spying on your hands.
+  
