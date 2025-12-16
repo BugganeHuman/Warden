@@ -14,7 +14,7 @@ import pyperclip
 CONN = sqlite3.connect("vault.db")
 CURSOR = CONN.cursor()
 MASTER_PASSWORD = None
-FERNET = None
+FERNET = None 
 counter_of_enter_password = 0
 
 def start(enter_password):
@@ -49,14 +49,13 @@ def registration (password):
     if len(password) < 10:
         print("minimal length of password - 10 chapters")
         return False
-    create_salt()
     salt = create_salt()
     CURSOR.execute("SELECT iterations FROM meta WHERE flag = 1")
     iterations = CURSOR.fetchone()
     create_hash = hashlib.pbkdf2_hmac(
         hash_name="sha256",
         password=str(password).encode(),
-        salt=salt[0],
+        salt=salt,
         iterations=iterations[0],
         dklen=32
     )
@@ -78,7 +77,7 @@ def check_hash(password):
     create_hash = hashlib.pbkdf2_hmac(
         hash_name="sha256",
         password=str(password).encode(),
-        salt=salt[0],
+        salt=salt,
         iterations=iterations[0],
         dklen=32
     )
@@ -101,10 +100,10 @@ def create_salt():
                        " VALUES (?,?,?)", (1, salt, 1200000))
         CONN.commit()
     result = CURSOR.execute("SELECT salt FROM meta").fetchall()
-    return result[0]
+    return result[0][0]
 
 def master_key(password):
-    salt = str(create_salt()).encode()
+    salt = create_salt()
     CURSOR.execute("SELECT iterations FROM meta WHERE flag = 1")
     iterations = CURSOR.fetchone()
     kdf = PBKDF2HMAC (
