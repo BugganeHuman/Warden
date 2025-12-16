@@ -9,6 +9,8 @@ This is a password manager - it is necessary for encryption and access to your p
 - customykinter
 
 ## Installation
+  thoroughly scan your computer for malware (especially Trojans and keyloggers)
+
   git clone https://github.com/BugganeHuman/Warden
   To ensure proper operation, place the .exe file along with the icon.png,
   or build it yourself using pyinstaller - use command
