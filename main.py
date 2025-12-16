@@ -37,7 +37,6 @@ def main():
         last_activity = time.time()
 
     def check_activity():
-        print(time.time() - last_activity)
         if time.time() - last_activity >= time_for_close:
             app.destroy()
             return
@@ -247,7 +246,6 @@ def main():
                             app.clipboard_append("")))
 
         def check_element(index):
-
             check_modal = customtkinter.CTkToplevel(app)
             check_modal.title("check")
             check_modal.geometry("600x200")
@@ -269,7 +267,6 @@ def main():
             password.bind("<Button-1>", lambda event: copy(password))
 
         def delete_element(index):
-
             delete_modal = customtkinter.CTkToplevel(app)
             delete_modal.title("deleting")
             delete_modal.geometry("400x200")
@@ -441,10 +438,11 @@ def main():
                         check_element(b[3]))
 
                     row += 1
+
         try:
             show_elements()
-        except Exception as er:
-            make_error(er)
+        except Exception as e:
+            make_error(e)
     #______________________________________________________________
     def start(password):
         if logics.start(password):
@@ -475,7 +473,6 @@ def main():
         label_error = customtkinter.CTkLabel(modal_error, text=error,
             font=("Verdana", 25))
         label_error.pack( pady = 70)
-
 
     show_start_frame()
     app.mainloop()
