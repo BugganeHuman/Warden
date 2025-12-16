@@ -2,6 +2,7 @@ import operations
 import logics
 import customtkinter
 from pathlib import Path
+import time
 
 def main():
     app = customtkinter.CTk()
@@ -25,7 +26,27 @@ def main():
     app.resizable(False, False)
     frame_start = customtkinter.CTkFrame(app)
     frame_vault = customtkinter.CTkFrame(app)
-    elements_frame = customtkinter.CTkScrollableFrame(frame_vault, width=1000, height=688)
+    elements_frame = customtkinter.CTkScrollableFrame(frame_vault,
+        width=1000, height=688)
+
+    time_for_close = 3 * 60
+    last_activity = time.time()
+
+    def track_last_activity():
+        nonlocal last_activity
+        last_activity = time.time()
+
+    def check_activity():
+        print(time.time() - last_activity)
+        if time.time() - last_activity >= time_for_close:
+            app.destroy()
+            return
+        app.after(1000, check_activity)
+
+    for event in ("<Motion>", "<Button>", "<Key>", "<MouseWheel>"):
+        app.bind_all(event, lambda event: track_last_activity())
+
+    check_activity()
 #___________________________________________________________________
     if not logics.salt_exists():
 
@@ -68,7 +89,8 @@ def main():
                 except Exception as e:
                     make_error(e)
             else:
-                welcome_label.configure(text="the passwords don't match", text_color="red")
+                welcome_label.configure(text="the passwords don't match",
+                    text_color="red")
                 password_entry_first.delete(0, "end")
                 password_entry_second.delete(0, "end" )
                 password_entry_first.configure(show="*")
@@ -79,9 +101,9 @@ def main():
             placeholder_text="Enter Password", width=500, height=50,
                 font=("Verdana", 44), show="*" )
 
-        check_btn_start = customtkinter.CTkButton(frame_start,text="Enter",command=lambda :
-            log_in(), width=50, height=50, font=("Verdana", 34),
-                fg_color="forest green")
+        check_btn_start = customtkinter.CTkButton(frame_start,text="Enter",
+            command=lambda :log_in(), width=50, height=50,
+                font=("Verdana", 34),fg_color="forest green")
 
         check_label = customtkinter.CTkLabel(frame_start, text="", width=300,
             height=50, font=("Verdana", 44))
@@ -108,7 +130,8 @@ def main():
     def creat_vault_widgets():
         generate_password_btn = customtkinter.CTkButton(frame_vault,
             text="generate\npassword", width=150, height=50, font=("Verdana", 30),
-                fg_color="forestgreen", text_color="ivory", command= lambda : generate_password())
+                fg_color="forestgreen", text_color="ivory",
+                    command= lambda : generate_password())
         generate_password_btn.place(x=670, y=10)
 
         add_link_entry = customtkinter.CTkEntry(frame_vault,
@@ -341,9 +364,9 @@ def main():
                 text="numbers (123)", variable=numbers_var, fg_color= "forestgreen")
             numbers_cb.place(x = 50, y = 150)
 
-            special_symbols_cb = customtkinter.CTkCheckBox(modal_gp, font=("Verdana", 20),
-                text = "special symbols (!?@$)", variable=special_symbols_var,
-                    fg_color= "forestgreen")
+            special_symbols_cb = customtkinter.CTkCheckBox(modal_gp,
+                font=("Verdana", 20),text = "special symbols (!?@$)",
+                    variable=special_symbols_var, fg_color= "forestgreen")
             special_symbols_cb.place(x = 290, y = 150)
 
             generate_btn = customtkinter.CTkButton(modal_gp, text="GENERATE",
@@ -456,6 +479,7 @@ def main():
 
     show_start_frame()
     app.mainloop()
+
 
 
 #_____________________________________________________________________
