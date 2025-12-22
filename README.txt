@@ -40,7 +40,7 @@ This is a password manager - it is necessary for encryption and access to your p
 ## Recommendations For Use
   Be sure to make backups
   because even if an attacker can't decrypt the database with passwords,
-  he can simply delete it
+  he can simply delete the database file.
 
   Do not store your master password anywhere.
 
