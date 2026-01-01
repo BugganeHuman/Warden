@@ -19,6 +19,8 @@
   ```git clone https://github.com/BugganeHuman/Warden```
   
   ```pip install pyinstaller```
+
+  ```pip install cryptography```
   
   ```pip install customtkinter```
 
