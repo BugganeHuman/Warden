@@ -73,8 +73,9 @@
 
 ## Screenshots
 
+![example_update](screenshots/sign_up.png)
+
 ![example_dark](screenshots/main_menu.png)
 
 ![example_light](screenshots/log_in.png)
 
-![example_update](screenshots/sign_up.png)
