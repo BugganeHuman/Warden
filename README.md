@@ -71,3 +71,10 @@
   3. Test the new database.
   4. Securely delete the old one.
 
+## Screenshots
+
+![example_dark](screenshots/main_menu.png)
+
+![example_light](screenshots/log_in.png)
+
+![example_update](screenshots/sign_up.png)
