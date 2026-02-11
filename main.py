@@ -6,7 +6,7 @@ import time
 
 def main():
     app = customtkinter.CTk()
-    app.geometry("1000x800")
+    app.geometry("1020x800")
     app.title("Warden")
     if Path("icon.ico").exists():
         app.iconbitmap("icon.ico")
@@ -484,3 +484,4 @@ def main():
 if __name__ == "__main__":
     main()
     logics.db_close()
+
